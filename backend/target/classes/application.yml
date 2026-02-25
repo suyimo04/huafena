@@ -21,6 +21,95 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3000ms
+
 jwt:
   secret: pollen-management-secret-key-must-be-at-least-256-bits-long-for-hs256
   expiration: 86400000
+
+backup:
+  directory: ./backups
+  retention-days: 30
+
+rate-limit:
+  default-max-requests: 20
+  default-window-ms: 60000
+  endpoints:
+    # 认证接口 - 登录/注册
+    "/api/auth/**":
+      max-requests: 20
+      window-ms: 60000
+    # 公开链接提交 - 无需登录的接口
+    "/api/public/**":
+      max-requests: 20
+      window-ms: 60000
+    # 薪资操作 - 敏感财务数据
+    "POST:/api/salary/**":
+      max-requests: 10
+      window-ms: 60000
+    "PUT:/api/salary/**":
+      max-requests: 10
+      window-ms: 60000
+    # 面试操作
+    "POST:/api/interviews/**":
+      max-requests: 10
+      window-ms: 60000
+    # 批量操作 - 高影响操作
+    "POST:/api/applications/batch-approve":
+      max-requests: 5
+      window-ms: 60000
+    "POST:/api/applications/batch-reject":
+      max-requests: 5
+      window-ms: 60000
+    "POST:/api/applications/batch-notify-interview":
+      max-requests: 5
+      window-ms: 60000
+    # 数据导出 - 防止大量导出
+    "GET:/api/applications/export":
+      max-requests: 5
+      window-ms: 60000
+    "POST:/api/reports/weekly/generate":
+      max-requests: 5
+      window-ms: 60000
+    "GET:/api/reports/export/**":
+      max-requests: 10
+      window-ms: 60000
+    # 邮件发送 - 防止滥发
+    "POST:/api/emails/send":
+      max-requests: 10
+      window-ms: 60000
+    "PUT:/api/emails/config":
+      max-requests: 5
+      window-ms: 60000
+    # 用户管理 - 敏感操作
+    "POST:/api/users/**":
+      max-requests: 10
+      window-ms: 60000
+    "PUT:/api/users/**":
+      max-requests: 10
+      window-ms: 60000
+    "DELETE:/api/users/**":
+      max-requests: 5
+      window-ms: 60000
+    # 实习期管理 - 转正/终止等关键操作
+    "POST:/api/internships/*/convert":
+      max-requests: 5
+      window-ms: 60000
+    "POST:/api/internships/*/terminate":
+      max-requests: 5
+      window-ms: 60000
+    "POST:/api/internships/*/extend":
+      max-requests: 5
+      window-ms: 60000
+    # 成员状态更新
+    "PUT:/api/members/*/status":
+      max-requests: 20
+      window-ms: 60000
+    # 备份操作 - 资源密集型
+    "POST:/api/backups/**":
+      max-requests: 3
+      window-ms: 60000

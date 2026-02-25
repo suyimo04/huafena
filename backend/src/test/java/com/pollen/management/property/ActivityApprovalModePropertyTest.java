@@ -5,9 +5,12 @@ import com.pollen.management.entity.ActivityRegistration;
 import com.pollen.management.entity.enums.ActivityStatus;
 import com.pollen.management.entity.enums.ApprovalMode;
 import com.pollen.management.entity.enums.RegistrationStatus;
+import com.pollen.management.repository.ActivityFeedbackRepository;
 import com.pollen.management.repository.ActivityGroupRepository;
+import com.pollen.management.repository.ActivityMaterialRepository;
 import com.pollen.management.repository.ActivityRegistrationRepository;
 import com.pollen.management.repository.ActivityRepository;
+import com.pollen.management.repository.ActivityStatisticsRepository;
 import com.pollen.management.service.ActivityServiceImpl;
 import com.pollen.management.service.PointsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -193,6 +196,9 @@ class ActivityApprovalModePropertyTest {
                 activityRepo,
                 regRepo,
                 mock(ActivityGroupRepository.class),
+                mock(ActivityFeedbackRepository.class),
+                mock(ActivityStatisticsRepository.class),
+                mock(ActivityMaterialRepository.class),
                 mock(PointsService.class),
                 new ObjectMapper()
         );

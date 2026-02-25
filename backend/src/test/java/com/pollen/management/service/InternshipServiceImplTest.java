@@ -4,17 +4,20 @@ import com.pollen.management.dto.CreateInternshipTaskRequest;
 import com.pollen.management.dto.InternshipProgress;
 import com.pollen.management.entity.Internship;
 import com.pollen.management.entity.InternshipTask;
+import com.pollen.management.entity.RoleChangeHistory;
 import com.pollen.management.entity.User;
 import com.pollen.management.entity.enums.InternshipStatus;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.InternshipRepository;
 import com.pollen.management.repository.InternshipTaskRepository;
+import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -43,6 +46,9 @@ class InternshipServiceImplTest {
 
     @Mock
     private EmailService emailService;
+
+    @Mock
+    private RoleChangeHistoryRepository roleChangeHistoryRepository;
 
     @InjectMocks
     private InternshipServiceImpl internshipService;
@@ -354,12 +360,37 @@ class InternshipServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
         when(internshipRepository.save(any(Internship.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
 
         internshipService.approveConversion(1L);
 
         assertEquals(Role.MEMBER, user.getRole());
         assertEquals(InternshipStatus.CONVERTED, internship.getStatus());
         verify(emailService).sendTemplateEmail(eq("CONVERSION_NOTIFICATION"), anyMap(), eq("intern1"));
+    }
+
+    @Test
+    void approveConversion_shouldRecordRoleChangeHistory() {
+        Internship internship = Internship.builder()
+                .id(1L).userId(1L).status(InternshipStatus.PENDING_CONVERSION).build();
+        User user = User.builder().id(1L).username("intern1").role(Role.INTERN).build();
+        when(internshipRepository.findById(1L)).thenReturn(Optional.of(internship));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(internshipRepository.save(any(Internship.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        internshipService.approveConversion(1L);
+
+        ArgumentCaptor<RoleChangeHistory> captor = ArgumentCaptor.forClass(RoleChangeHistory.class);
+        verify(roleChangeHistoryRepository).save(captor.capture());
+        RoleChangeHistory history = captor.getValue();
+        assertEquals(1L, history.getUserId());
+        assertEquals(Role.INTERN, history.getOldRole());
+        assertEquals(Role.MEMBER, history.getNewRole());
+        assertEquals("system", history.getChangedBy());
     }
 
     @Test
@@ -382,6 +413,8 @@ class InternshipServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
         when(internshipRepository.save(any(Internship.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
         doThrow(new RuntimeException("SMTP error")).when(emailService)
                 .sendTemplateEmail(anyString(), anyMap(), anyString());
 

@@ -1,7 +1,6 @@
 package com.pollen.management.controller;
 
-import com.pollen.management.dto.ApiResponse;
-import com.pollen.management.dto.DashboardStatsDTO;
+import com.pollen.management.dto.*;
 import com.pollen.management.entity.AuditLog;
 import com.pollen.management.service.AuditLogService;
 import com.pollen.management.service.DashboardService;
@@ -15,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -177,5 +177,82 @@ class DashboardControllerTest {
         assertThatThrownBy(() -> controller.getAuditLogs("bad"))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("操作类型不能为空");
+    }
+
+    // --- GET /api/dashboard/recruitment ---
+
+    @Test
+    void getRecruitmentStats_shouldReturnStatsFromService() {
+        var stats = RecruitmentStatsDTO.builder()
+                .stageCount(Map.of("PENDING_INITIAL_REVIEW", 5L, "REJECTED", 2L))
+                .aiInterviewPassRate(0.75)
+                .manualReviewPassRate(0.6)
+                .build();
+        when(dashboardService.getRecruitmentStats()).thenReturn(stats);
+
+        ApiResponse<RecruitmentStatsDTO> response = controller.getRecruitmentStats();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData().getStageCount()).containsEntry("PENDING_INITIAL_REVIEW", 5L);
+        assertThat(response.getData().getAiInterviewPassRate()).isEqualTo(0.75);
+        assertThat(response.getData().getManualReviewPassRate()).isEqualTo(0.6);
+        verify(dashboardService).getRecruitmentStats();
+    }
+
+    @Test
+    void getRecruitmentStats_withEmptyData_shouldReturnZeroRates() {
+        var stats = RecruitmentStatsDTO.builder()
+                .stageCount(Map.of())
+                .aiInterviewPassRate(0.0)
+                .manualReviewPassRate(0.0)
+                .build();
+        when(dashboardService.getRecruitmentStats()).thenReturn(stats);
+
+        ApiResponse<RecruitmentStatsDTO> response = controller.getRecruitmentStats();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData().getAiInterviewPassRate()).isEqualTo(0.0);
+        assertThat(response.getData().getManualReviewPassRate()).isEqualTo(0.0);
+    }
+
+    // --- GET /api/dashboard/salary ---
+
+    @Test
+    void getSalaryStats_shouldReturnStatsFromService() {
+        var rank1 = MemberSalaryRank.builder().userId(1L).username("alice").totalPoints(200).miniCoins(400).build();
+        var stats = SalaryStatsDTO.builder()
+                .totalPool(2000)
+                .allocated(400)
+                .usageRate(0.2)
+                .ranking(List.of(rank1))
+                .build();
+        when(dashboardService.getSalaryStats()).thenReturn(stats);
+
+        ApiResponse<SalaryStatsDTO> response = controller.getSalaryStats();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData().getTotalPool()).isEqualTo(2000);
+        assertThat(response.getData().getAllocated()).isEqualTo(400);
+        assertThat(response.getData().getUsageRate()).isEqualTo(0.2);
+        assertThat(response.getData().getRanking()).hasSize(1);
+        assertThat(response.getData().getRanking().get(0).getUsername()).isEqualTo("alice");
+        verify(dashboardService).getSalaryStats();
+    }
+
+    @Test
+    void getSalaryStats_withNoRecords_shouldReturnEmptyRanking() {
+        var stats = SalaryStatsDTO.builder()
+                .totalPool(2000)
+                .allocated(0)
+                .usageRate(0.0)
+                .ranking(Collections.emptyList())
+                .build();
+        when(dashboardService.getSalaryStats()).thenReturn(stats);
+
+        ApiResponse<SalaryStatsDTO> response = controller.getSalaryStats();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData().getAllocated()).isEqualTo(0);
+        assertThat(response.getData().getRanking()).isEmpty();
     }
 }

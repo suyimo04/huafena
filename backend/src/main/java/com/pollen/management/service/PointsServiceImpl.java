@@ -1,11 +1,14 @@
 package com.pollen.management.service;
 
+import com.pollen.management.config.RedisConfig;
 import com.pollen.management.entity.PointsRecord;
 import com.pollen.management.entity.enums.PointsType;
 import com.pollen.management.repository.PointsRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,10 @@ public class PointsServiceImpl implements PointsService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = RedisConfig.CACHE_DASHBOARD, allEntries = true),
+        @CacheEvict(value = RedisConfig.CACHE_MEMBERS, allEntries = true)
+    })
     public PointsRecord addPoints(Long userId, PointsType pointsType, int amount, String description) {
         validateUser(userId);
         if (amount <= 0) {
@@ -39,6 +46,10 @@ public class PointsServiceImpl implements PointsService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = RedisConfig.CACHE_DASHBOARD, allEntries = true),
+        @CacheEvict(value = RedisConfig.CACHE_MEMBERS, allEntries = true)
+    })
     public PointsRecord deductPoints(Long userId, PointsType pointsType, int amount, String description) {
         validateUser(userId);
         if (amount <= 0) {

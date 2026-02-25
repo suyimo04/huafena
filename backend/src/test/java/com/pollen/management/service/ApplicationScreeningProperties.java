@@ -370,13 +370,14 @@ class ApplicationScreeningProperties {
     @Provide
     Arbitrary<BigDecimal[]> lowWeeklyHoursParams() {
         // dailyHours * weeklyDays < 10
+        // Use integer tenths to avoid floating-point precision issues
         return Arbitraries.integers().between(1, 7)
                 .flatMap(days -> {
-                    // Max daily hours so that daily * days < 10
-                    double maxDaily = 9.9 / days;
-                    return Arbitraries.doubles().between(0.5, Math.max(0.5, maxDaily))
-                            .map(daily -> new BigDecimal[]{
-                                    BigDecimal.valueOf(daily).setScale(1, java.math.RoundingMode.DOWN),
+                    // Max daily hours (in tenths) so that (tenths/10) * days < 10
+                    int maxTenths = Math.max(5, (int) (99.0 / days));
+                    return Arbitraries.integers().between(5, maxTenths)
+                            .map(tenths -> new BigDecimal[]{
+                                    BigDecimal.valueOf(tenths, 1), // e.g. 15 -> 1.5
                                     BigDecimal.valueOf(days)
                             });
                 })
@@ -386,12 +387,13 @@ class ApplicationScreeningProperties {
     @Provide
     Arbitrary<BigDecimal[]> sufficientWeeklyHoursParams() {
         // dailyHours * weeklyDays >= 10
+        // Use integer tenths to avoid floating-point precision issues
         return Arbitraries.integers().between(2, 7)
                 .flatMap(days -> {
-                    double minDaily = 10.0 / days;
-                    return Arbitraries.doubles().between(Math.max(minDaily, 1.5), 12.0)
-                            .map(daily -> new BigDecimal[]{
-                                    BigDecimal.valueOf(daily).setScale(1, java.math.RoundingMode.HALF_UP),
+                    int minTenths = Math.max(15, (int) Math.ceil(100.0 / days));
+                    return Arbitraries.integers().between(minTenths, 120)
+                            .map(tenths -> new BigDecimal[]{
+                                    BigDecimal.valueOf(tenths, 1), // e.g. 25 -> 2.5
                                     BigDecimal.valueOf(days)
                             });
                 })

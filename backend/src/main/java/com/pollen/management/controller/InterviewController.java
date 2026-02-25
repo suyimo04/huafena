@@ -14,8 +14,10 @@ import java.util.List;
 
 /**
  * AI 面试控制器：启动面试、对话交互、结束面试、查看报告、人工复审
- * 基础权限：ADMIN、LEADER、VICE_LEADER（通过 SecurityConfig 配置）
- * 人工复审：仅 ADMIN、LEADER（通过 @PreAuthorize 限制）
+ * 访问控制（Requirements 17.6）：
+ * - ADMIN/LEADER：完整读写访问
+ * - VICE_LEADER：只读访问（仅 GET 端点）
+ * - 其他角色：403（通过 SecurityConfig URL 级别拦截）
  */
 @RestController
 @RequestMapping("/api/interviews")
@@ -25,6 +27,7 @@ public class InterviewController {
     private final InterviewService interviewService;
 
     @PostMapping("/start")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     public ApiResponse<Interview> startInterview(
             @Valid @RequestBody StartInterviewRequest request) {
         Interview interview = interviewService.startInterview(
@@ -33,6 +36,7 @@ public class InterviewController {
     }
 
     @PostMapping("/{id}/message")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     public ApiResponse<InterviewMessage> processMessage(
             @PathVariable Long id,
             @Valid @RequestBody InterviewMessageRequest request) {
@@ -41,24 +45,28 @@ public class InterviewController {
     }
 
     @PostMapping("/{id}/end")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     public ApiResponse<InterviewReport> endInterview(@PathVariable Long id) {
         InterviewReport report = interviewService.endInterview(id);
         return ApiResponse.success(report);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'VICE_LEADER')")
     public ApiResponse<Interview> getInterview(@PathVariable Long id) {
         Interview interview = interviewService.getInterview(id);
         return ApiResponse.success(interview);
     }
 
     @GetMapping("/{id}/messages")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'VICE_LEADER')")
     public ApiResponse<List<InterviewMessage>> getMessages(@PathVariable Long id) {
         List<InterviewMessage> messages = interviewService.getMessages(id);
         return ApiResponse.success(messages);
     }
 
     @GetMapping("/{id}/report")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'VICE_LEADER')")
     public ApiResponse<InterviewReport> getReport(@PathVariable Long id) {
         InterviewReport report = interviewService.getReport(id);
         return ApiResponse.success(report);
@@ -75,8 +83,10 @@ public class InterviewController {
     }
 
     @GetMapping("/{id}/archive")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'VICE_LEADER')")
     public ApiResponse<InterviewArchiveRecord> getArchive(@PathVariable Long id) {
         InterviewArchiveRecord record = interviewService.getFullArchivedRecord(id);
         return ApiResponse.success(record);
     }
 }
+

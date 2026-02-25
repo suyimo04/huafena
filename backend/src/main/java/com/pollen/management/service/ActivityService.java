@@ -1,10 +1,14 @@
 package com.pollen.management.service;
 
+import com.pollen.management.dto.CreateActivityRequest;
 import com.pollen.management.entity.Activity;
 import com.pollen.management.entity.ActivityFeedback;
 import com.pollen.management.entity.ActivityGroup;
+import com.pollen.management.entity.ActivityMaterial;
 import com.pollen.management.entity.ActivityRegistration;
+import com.pollen.management.entity.ActivityStatistics;
 import com.pollen.management.dto.FeedbackRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +22,11 @@ public interface ActivityService {
      * 创建活动（名称、描述、时间、地点）
      */
     Activity createActivity(String name, String description, LocalDateTime eventTime, String location, Long createdBy);
+
+    /**
+     * V3.1: 创建活动（含封面图、类型、报名表单、审核方式）
+     */
+    Activity createActivity(CreateActivityRequest request);
 
     /**
      * 成员报名活动（支持额外字段和审核模式）
@@ -83,5 +92,20 @@ public interface ActivityService {
      * 获取活动反馈列表
      */
     List<ActivityFeedback> getFeedback(Long activityId);
+
+    /**
+     * 获取活动统计数据（报名人数、实际参与人数、签到率、反馈汇总）
+     */
+    ActivityStatistics getStatistics(Long activityId);
+
+    /**
+     * 上传活动资料
+     */
+    void uploadMaterial(Long activityId, MultipartFile file, Long uploadedBy);
+
+    /**
+     * 获取活动资料列表
+     */
+    List<ActivityMaterial> getMaterials(Long activityId);
 }
 

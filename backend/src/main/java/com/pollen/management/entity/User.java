@@ -1,5 +1,6 @@
 package com.pollen.management.entity;
 
+import com.pollen.management.entity.enums.OnlineStatus;
 import com.pollen.management.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,12 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private Boolean pendingDismissal = false;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private OnlineStatus onlineStatus = OnlineStatus.OFFLINE;
+
+    private LocalDateTime lastActiveAt;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

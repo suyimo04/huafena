@@ -9,7 +9,9 @@ import com.pollen.management.dto.UpdateGroupMembersRequest;
 import com.pollen.management.entity.Activity;
 import com.pollen.management.entity.ActivityFeedback;
 import com.pollen.management.entity.ActivityGroup;
+import com.pollen.management.entity.ActivityMaterial;
 import com.pollen.management.entity.ActivityRegistration;
+import com.pollen.management.entity.ActivityStatistics;
 import com.pollen.management.service.ActivityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,18 +33,13 @@ public class ActivityController {
     private final ActivityService activityService;
 
     /**
-     * 创建活动
+     * 创建活动（V3.1 增强：含封面图、类型、报名表单、审核方式）
      * 仅 ADMIN、LEADER 可操作
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     public ApiResponse<Activity> createActivity(@Valid @RequestBody CreateActivityRequest request) {
-        Activity activity = activityService.createActivity(
-                request.getName(),
-                request.getDescription(),
-                request.getEventTime(),
-                request.getLocation(),
-                request.getCreatedBy());
+        Activity activity = activityService.createActivity(request);
         return ApiResponse.success(activity);
     }
 
@@ -185,5 +182,37 @@ public class ActivityController {
     public ApiResponse<List<ActivityFeedback>> getFeedback(@PathVariable Long id) {
         List<ActivityFeedback> feedback = activityService.getFeedback(id);
         return ApiResponse.success(feedback);
+    }
+
+    /**
+     * 获取活动统计数据
+     */
+    @GetMapping("/{id}/statistics")
+    public ApiResponse<ActivityStatistics> getStatistics(@PathVariable Long id) {
+        ActivityStatistics statistics = activityService.getStatistics(id);
+        return ApiResponse.success(statistics);
+    }
+
+    /**
+     * 上传活动资料
+     * 仅 ADMIN、LEADER 可操作
+     */
+    @PostMapping("/{id}/materials")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
+    public ApiResponse<Void> uploadMaterial(
+            @PathVariable Long id,
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam Long uploadedBy) {
+        activityService.uploadMaterial(id, file, uploadedBy);
+        return ApiResponse.success(null);
+    }
+
+    /**
+     * 获取活动资料列表
+     */
+    @GetMapping("/{id}/materials")
+    public ApiResponse<List<ActivityMaterial>> getMaterials(@PathVariable Long id) {
+        List<ActivityMaterial> materials = activityService.getMaterials(id);
+        return ApiResponse.success(materials);
     }
 }

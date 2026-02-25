@@ -1,5 +1,6 @@
 package com.pollen.management.service;
 
+import com.pollen.management.config.RedisConfig;
 import com.pollen.management.dto.CreateTemplateRequest;
 import com.pollen.management.dto.UpdateTemplateRequest;
 import com.pollen.management.entity.QuestionnaireTemplate;
@@ -9,6 +10,8 @@ import com.pollen.management.repository.QuestionnaireTemplateRepository;
 import com.pollen.management.repository.QuestionnaireVersionRepository;
 import com.pollen.management.util.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,7 @@ public class QuestionnaireTemplateServiceImpl implements QuestionnaireTemplateSe
 
     @Override
     @Transactional
+    @CacheEvict(value = RedisConfig.CACHE_QUESTIONNAIRE, allEntries = true)
     public QuestionnaireTemplate create(CreateTemplateRequest request, Long createdBy) {
         QuestionnaireTemplate template = QuestionnaireTemplate.builder()
                 .title(request.getTitle())
@@ -44,6 +48,7 @@ public class QuestionnaireTemplateServiceImpl implements QuestionnaireTemplateSe
 
     @Override
     @Transactional
+    @CacheEvict(value = RedisConfig.CACHE_QUESTIONNAIRE, allEntries = true)
     public QuestionnaireTemplate update(Long id, UpdateTemplateRequest request) {
         QuestionnaireTemplate template = templateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(404, "问卷模板不存在"));
@@ -73,18 +78,21 @@ public class QuestionnaireTemplateServiceImpl implements QuestionnaireTemplateSe
     }
 
     @Override
+    @Cacheable(value = RedisConfig.CACHE_QUESTIONNAIRE, key = "#id", unless = "#result == null")
     public QuestionnaireTemplate getById(Long id) {
         return templateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(404, "问卷模板不存在"));
     }
 
     @Override
+    @Cacheable(value = RedisConfig.CACHE_QUESTIONNAIRE, key = "'all'", unless = "#result == null || #result.isEmpty()")
     public List<QuestionnaireTemplate> listAll() {
         return templateRepository.findAll();
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = RedisConfig.CACHE_QUESTIONNAIRE, allEntries = true)
     public void delete(Long id) {
         if (!templateRepository.existsById(id)) {
             throw new BusinessException(404, "问卷模板不存在");
@@ -97,6 +105,7 @@ public class QuestionnaireTemplateServiceImpl implements QuestionnaireTemplateSe
 
     @Override
     @Transactional
+    @CacheEvict(value = RedisConfig.CACHE_QUESTIONNAIRE, allEntries = true)
     public QuestionnaireVersion publish(Long templateId, Long versionId) {
         QuestionnaireTemplate template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new BusinessException(404, "问卷模板不存在"));

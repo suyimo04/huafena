@@ -53,7 +53,7 @@ class ActivityControllerTest {
                 .status(ActivityStatus.UPCOMING)
                 .registrationCount(0)
                 .build();
-        when(activityService.createActivity("团建活动", "年度团建", eventTime, "公园", 1L))
+        when(activityService.createActivity(any(CreateActivityRequest.class)))
                 .thenReturn(activity);
 
         ApiResponse<Activity> response = controller.createActivity(request);
@@ -65,7 +65,7 @@ class ActivityControllerTest {
         assertThat(response.getData().getLocation()).isEqualTo("公园");
         assertThat(response.getData().getStatus()).isEqualTo(ActivityStatus.UPCOMING);
         assertThat(response.getData().getRegistrationCount()).isEqualTo(0);
-        verify(activityService).createActivity("团建活动", "年度团建", eventTime, "公园", 1L);
+        verify(activityService).createActivity(any(CreateActivityRequest.class));
     }
 
     // --- GET /api/activities (list) ---
@@ -158,32 +158,32 @@ class ActivityControllerTest {
                 .checkedIn(true)
                 .checkedInAt(LocalDateTime.now())
                 .build();
-        when(activityService.checkIn(1L, 2L)).thenReturn(registration);
+        when(activityService.checkIn(1L, 2L, null)).thenReturn(registration);
 
-        ApiResponse<ActivityRegistration> response = controller.checkIn(1L, 2L);
+        ApiResponse<ActivityRegistration> response = controller.checkIn(1L, 2L, null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData().getCheckedIn()).isTrue();
         assertThat(response.getData().getCheckedInAt()).isNotNull();
-        verify(activityService).checkIn(1L, 2L);
+        verify(activityService).checkIn(1L, 2L, null);
     }
 
     @Test
     void checkIn_notRegistered_shouldPropagateException() {
-        when(activityService.checkIn(1L, 3L))
+        when(activityService.checkIn(1L, 3L, null))
                 .thenThrow(new BusinessException(403, "未报名该活动，无法签到"));
 
-        assertThatThrownBy(() -> controller.checkIn(1L, 3L))
+        assertThatThrownBy(() -> controller.checkIn(1L, 3L, null))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("未报名该活动，无法签到");
     }
 
     @Test
     void checkIn_alreadyCheckedIn_shouldPropagateException() {
-        when(activityService.checkIn(1L, 2L))
+        when(activityService.checkIn(1L, 2L, null))
                 .thenThrow(new BusinessException(400, "已签到，请勿重复签到"));
 
-        assertThatThrownBy(() -> controller.checkIn(1L, 2L))
+        assertThatThrownBy(() -> controller.checkIn(1L, 2L, null))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("已签到，请勿重复签到");
     }

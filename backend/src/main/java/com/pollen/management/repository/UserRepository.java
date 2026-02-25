@@ -1,10 +1,12 @@
 package com.pollen.management.repository;
 
 import com.pollen.management.entity.User;
+import com.pollen.management.entity.enums.OnlineStatus;
 import com.pollen.management.entity.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRole(Role role);
     List<User> findByRoleIn(List<Role> roles);
     long countByRole(Role role);
+    List<User> findByOnlineStatus(OnlineStatus onlineStatus);
+    List<User> findByOnlineStatusNotAndLastActiveAtBefore(OnlineStatus status, LocalDateTime threshold);
+    List<User> findByCreatedAtAfter(LocalDateTime after);
 }

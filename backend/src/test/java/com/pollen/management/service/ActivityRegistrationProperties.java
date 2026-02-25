@@ -3,9 +3,12 @@ package com.pollen.management.service;
 import com.pollen.management.entity.Activity;
 import com.pollen.management.entity.ActivityRegistration;
 import com.pollen.management.entity.enums.ActivityStatus;
+import com.pollen.management.repository.ActivityFeedbackRepository;
 import com.pollen.management.repository.ActivityGroupRepository;
+import com.pollen.management.repository.ActivityMaterialRepository;
 import com.pollen.management.repository.ActivityRegistrationRepository;
 import com.pollen.management.repository.ActivityRepository;
+import com.pollen.management.repository.ActivityStatisticsRepository;
 import com.pollen.management.util.BusinessException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.jqwik.api.*;
@@ -27,10 +30,16 @@ class ActivityRegistrationProperties {
 
     private ActivityServiceImpl createService(ActivityRepository activityRepo,
                                               ActivityRegistrationRepository registrationRepo) {
-        PointsService pointsService = Mockito.mock(PointsService.class);
-        ActivityGroupRepository groupRepo = Mockito.mock(ActivityGroupRepository.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        return new ActivityServiceImpl(activityRepo, registrationRepo, groupRepo, pointsService, objectMapper);
+        return new ActivityServiceImpl(
+                activityRepo,
+                registrationRepo,
+                Mockito.mock(ActivityGroupRepository.class),
+                Mockito.mock(ActivityFeedbackRepository.class),
+                Mockito.mock(ActivityStatisticsRepository.class),
+                Mockito.mock(ActivityMaterialRepository.class),
+                Mockito.mock(PointsService.class),
+                new ObjectMapper()
+        );
     }
 
     private Activity buildActivity(Long activityId, ActivityStatus status) {

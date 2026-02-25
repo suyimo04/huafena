@@ -1,5 +1,6 @@
 package com.pollen.management.service;
 
+import com.pollen.management.config.RedisConfig;
 import com.pollen.management.dto.BatchSaveResponse;
 import com.pollen.management.dto.SalaryReportDTO;
 import com.pollen.management.entity.AuditLog;
@@ -11,6 +12,7 @@ import com.pollen.management.repository.SalaryRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,6 +129,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     @Transactional
+    @CacheEvict(value = RedisConfig.CACHE_DASHBOARD, allEntries = true)
     public List<SalaryRecord> batchSave(List<SalaryRecord> records) {
         validateBatch(records);
         return salaryRecordRepository.saveAll(records);
@@ -344,6 +347,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     @Transactional
+    @CacheEvict(value = RedisConfig.CACHE_DASHBOARD, allEntries = true)
     public BatchSaveResponse batchSaveWithValidation(List<SalaryRecord> records, Long operatorId) {
         // Step 1: 结构化验证
         BatchSaveResponse validationResult = validateBatchDetailed(records);
