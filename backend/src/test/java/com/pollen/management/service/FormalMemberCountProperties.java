@@ -3,6 +3,7 @@ package com.pollen.management.service;
 import com.pollen.management.entity.User;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.PointsRecordRepository;
+import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.repository.SalaryRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
@@ -32,7 +33,8 @@ class FormalMemberCountProperties {
     private MemberRotationServiceImpl createService(UserRepository userRepo) {
         PointsRecordRepository pointsRepo = Mockito.mock(PointsRecordRepository.class);
         SalaryRecordRepository salaryRepo = Mockito.mock(SalaryRecordRepository.class);
-        return new MemberRotationServiceImpl(userRepo, pointsRepo, salaryRepo);
+        RoleChangeHistoryRepository roleChangeHistoryRepo = Mockito.mock(RoleChangeHistoryRepository.class);
+        return new MemberRotationServiceImpl(userRepo, pointsRepo, salaryRepo, roleChangeHistoryRepo);
     }
 
     // ========== Property 22a: Valid swap preserves formal member count ==========

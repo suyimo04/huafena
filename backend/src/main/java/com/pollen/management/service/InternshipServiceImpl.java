@@ -4,11 +4,13 @@ import com.pollen.management.dto.CreateInternshipTaskRequest;
 import com.pollen.management.dto.InternshipProgress;
 import com.pollen.management.entity.Internship;
 import com.pollen.management.entity.InternshipTask;
+import com.pollen.management.entity.RoleChangeHistory;
 import com.pollen.management.entity.User;
 import com.pollen.management.entity.enums.InternshipStatus;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.InternshipRepository;
 import com.pollen.management.repository.InternshipTaskRepository;
+import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class InternshipServiceImpl implements InternshipService {
     private final UserRepository userRepository;
     private final PointsService pointsService;
     private final EmailService emailService;
+    private final RoleChangeHistoryRepository roleChangeHistoryRepository;
 
     @Override
     @Transactional
@@ -163,8 +166,17 @@ public class InternshipServiceImpl implements InternshipService {
         User user = userRepository.findById(internship.getUserId())
                 .orElseThrow(() -> new BusinessException(404, "用户不存在"));
 
+        Role oldRole = user.getRole();
         user.setRole(Role.MEMBER);
         userRepository.save(user);
+
+        // 记录角色变更历史
+        roleChangeHistoryRepository.save(RoleChangeHistory.builder()
+                .userId(user.getId())
+                .oldRole(oldRole)
+                .newRole(Role.MEMBER)
+                .changedBy("system")
+                .build());
 
         internship.setStatus(InternshipStatus.CONVERTED);
         internshipRepository.save(internship);

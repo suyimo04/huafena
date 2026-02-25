@@ -174,6 +174,13 @@ const allMenuGroups: MenuNode[] = [
     roles: ['ADMIN', 'LEADER', 'MEMBER', 'INTERN'],
   },
   {
+    id: 'reports',
+    path: '/reports',
+    title: '报表导出',
+    icon: TrendCharts,
+    roles: ['ADMIN', 'LEADER'],
+  },
+  {
     id: 'system',
     title: '系统管理',
     icon: Setting,

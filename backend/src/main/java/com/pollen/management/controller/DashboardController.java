@@ -2,11 +2,13 @@ package com.pollen.management.controller;
 
 import com.pollen.management.dto.ApiResponse;
 import com.pollen.management.dto.DashboardStatsDTO;
+import com.pollen.management.dto.OperationsDataDTO;
+import com.pollen.management.dto.RecruitmentStatsDTO;
+import com.pollen.management.dto.SalaryStatsDTO;
 import com.pollen.management.entity.AuditLog;
 import com.pollen.management.service.AuditLogService;
 import com.pollen.management.service.DashboardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,36 @@ public class DashboardController {
     public ApiResponse<DashboardStatsDTO> getDashboardStats() {
         DashboardStatsDTO stats = dashboardService.getDashboardStats();
         return ApiResponse.success(stats);
+    }
+
+    /**
+     * 获取招募数据统计
+     * GET /api/dashboard/recruitment
+     */
+    @GetMapping("/recruitment")
+    public ApiResponse<RecruitmentStatsDTO> getRecruitmentStats() {
+        RecruitmentStatsDTO stats = dashboardService.getRecruitmentStats();
+        return ApiResponse.success(stats);
+    }
+
+    /**
+     * 获取薪酬数据统计
+     * GET /api/dashboard/salary
+     */
+    @GetMapping("/salary")
+    public ApiResponse<SalaryStatsDTO> getSalaryStats() {
+        SalaryStatsDTO stats = dashboardService.getSalaryStats();
+        return ApiResponse.success(stats);
+    }
+
+    /**
+     * 获取运营数据（用户增长趋势、问题处理效率）
+     * GET /api/dashboard/operations
+     */
+    @GetMapping("/operations")
+    public ApiResponse<OperationsDataDTO> getOperationsData() {
+        OperationsDataDTO data = dashboardService.getOperationsData();
+        return ApiResponse.success(data);
     }
 
     /**

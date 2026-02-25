@@ -1,10 +1,12 @@
 package com.pollen.management.service;
 
 import com.pollen.management.entity.PointsRecord;
+import com.pollen.management.entity.RoleChangeHistory;
 import com.pollen.management.entity.SalaryRecord;
 import com.pollen.management.entity.User;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.PointsRecordRepository;
+import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.repository.SalaryRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -35,6 +38,9 @@ class MemberRotationServiceImplTest {
 
     @Mock
     private SalaryRecordRepository salaryRecordRepository;
+
+    @Mock
+    private RoleChangeHistoryRepository roleChangeHistoryRepository;
 
     @InjectMocks
     private MemberRotationServiceImpl memberRotationService;
@@ -360,12 +366,49 @@ class MemberRotationServiceImplTest {
         when(userRepository.findById(2L)).thenReturn(Optional.of(member));
         when(userRepository.countByRole(Role.MEMBER)).thenReturn(4L);
         when(userRepository.countByRole(Role.VICE_LEADER)).thenReturn(1L);
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
 
         memberRotationService.executePromotion(1L, 2L);
 
         assertEquals(Role.MEMBER, intern.getRole());
         assertEquals(Role.INTERN, member.getRole());
         verify(userRepository, times(2)).save(any(User.class));
+        // Verify role change history recorded for both users
+        verify(roleChangeHistoryRepository, times(2)).save(any(RoleChangeHistory.class));
+    }
+
+    @Test
+    void executePromotion_shouldRecordRoleChangeHistoryForBothUsers() {
+        User intern = User.builder().id(1L).username("intern1").role(Role.INTERN).build();
+        User member = User.builder().id(2L).username("member1").role(Role.MEMBER).build();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(intern));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(member));
+        when(userRepository.countByRole(Role.MEMBER)).thenReturn(4L);
+        when(userRepository.countByRole(Role.VICE_LEADER)).thenReturn(1L);
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        memberRotationService.executePromotion(1L, 2L);
+
+        ArgumentCaptor<RoleChangeHistory> captor = ArgumentCaptor.forClass(RoleChangeHistory.class);
+        verify(roleChangeHistoryRepository, times(2)).save(captor.capture());
+
+        List<RoleChangeHistory> histories = captor.getAllValues();
+        // Intern promoted: INTERN -> MEMBER
+        RoleChangeHistory internHistory = histories.stream()
+                .filter(h -> h.getUserId().equals(1L)).findFirst().orElseThrow();
+        assertEquals(Role.INTERN, internHistory.getOldRole());
+        assertEquals(Role.MEMBER, internHistory.getNewRole());
+        assertEquals("system", internHistory.getChangedBy());
+
+        // Formal member demoted: MEMBER -> INTERN
+        RoleChangeHistory memberHistory = histories.stream()
+                .filter(h -> h.getUserId().equals(2L)).findFirst().orElseThrow();
+        assertEquals(Role.MEMBER, memberHistory.getOldRole());
+        assertEquals(Role.INTERN, memberHistory.getNewRole());
+        assertEquals("system", memberHistory.getChangedBy());
     }
 
     @Test
@@ -377,11 +420,14 @@ class MemberRotationServiceImplTest {
         when(userRepository.findById(2L)).thenReturn(Optional.of(viceLeader));
         when(userRepository.countByRole(Role.MEMBER)).thenReturn(5L);
         when(userRepository.countByRole(Role.VICE_LEADER)).thenReturn(0L);
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
 
         memberRotationService.executePromotion(1L, 2L);
 
         assertEquals(Role.MEMBER, intern.getRole());
         assertEquals(Role.INTERN, viceLeader.getRole());
+        verify(roleChangeHistoryRepository, times(2)).save(any(RoleChangeHistory.class));
     }
 
     @Test

@@ -75,8 +75,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/salary/**").hasAnyRole("ADMIN", "LEADER")
                         .requestMatchers(HttpMethod.DELETE, "/api/salary/**").hasAnyRole("ADMIN", "LEADER")
                         .requestMatchers(HttpMethod.GET, "/api/salary/**").hasAnyRole("ADMIN", "LEADER", "VICE_LEADER", "MEMBER")
-                        // AI 面试管理：ADMIN、LEADER、VICE_LEADER
-                        .requestMatchers("/api/interviews/**").hasAnyRole("ADMIN", "LEADER", "VICE_LEADER")
+                        // AI 面试管理：写操作 ADMIN、LEADER；读操作 ADMIN、LEADER、VICE_LEADER
+                        .requestMatchers(HttpMethod.POST, "/api/interviews/**").hasAnyRole("ADMIN", "LEADER")
+                        .requestMatchers(HttpMethod.PUT, "/api/interviews/**").hasAnyRole("ADMIN", "LEADER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/interviews/**").hasAnyRole("ADMIN", "LEADER")
+                        .requestMatchers(HttpMethod.GET, "/api/interviews/**").hasAnyRole("ADMIN", "LEADER", "VICE_LEADER")
                         // 申请管理：ADMIN、LEADER、VICE_LEADER
                         .requestMatchers("/api/applications/**").hasAnyRole("ADMIN", "LEADER", "VICE_LEADER")
                         // 活动管理：ADMIN、LEADER、VICE_LEADER、MEMBER、INTERN
@@ -87,8 +90,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/questionnaire/templates/**").hasAnyRole("ADMIN", "LEADER", "VICE_LEADER")
                         // 问卷回答：已认证用户
                         .requestMatchers("/api/questionnaire/responses/**").authenticated()
+                        // 报表与数据导出：ADMIN、LEADER
+                        .requestMatchers("/api/reports/**").hasAnyRole("ADMIN", "LEADER")
                         // 邮件服务：ADMIN、LEADER
                         .requestMatchers("/api/emails/**").hasAnyRole("ADMIN", "LEADER")
+                        // 成员管理：ADMIN、LEADER、VICE_LEADER（列表/详情），已认证用户（状态/心跳）
+                        .requestMatchers(HttpMethod.GET, "/api/members/**").hasAnyRole("ADMIN", "LEADER", "VICE_LEADER")
+                        .requestMatchers(HttpMethod.PUT, "/api/members/*/status").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/members/*/heartbeat").authenticated()
                         // 成员流转管理：ADMIN、LEADER
                         .requestMatchers("/api/member-rotation/**").hasAnyRole("ADMIN", "LEADER")
                         // 其他接口需要认证

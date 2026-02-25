@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.pollen.management.util.AesEncryptionUtilTest
 -------------------------------------------------------------------------------
-Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.307 s -- in com.pollen.management.util.AesEncryptionUtilTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s -- in com.pollen.management.util.AesEncryptionUtilTest

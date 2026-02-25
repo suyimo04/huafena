@@ -47,6 +47,8 @@ class InterviewServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private InternshipService internshipService;
+    @Mock
+    private RoleChangeHistoryRepository roleChangeHistoryRepository;
 
     @InjectMocks
     private InterviewServiceImpl interviewService;
@@ -1064,5 +1066,57 @@ class InterviewServiceImplTest {
 
         verify(internshipService, never()).createForNewIntern(anyLong());
         verify(internshipService, never()).assignMentor(anyLong(), anyLong());
+    }
+
+    // --- Role change history recording tests ---
+
+    @Test
+    void manualReview_approved_shouldRecordRoleChangeHistory() {
+        Interview completedInterview = Interview.builder()
+                .id(100L).applicationId(1L).userId(10L)
+                .status(InterviewStatus.COMPLETED).build();
+        InterviewReport report = InterviewReport.builder()
+                .id(1L).interviewId(100L).totalScore(8).build();
+        User user = User.builder().id(10L).username("candidate").role(Role.APPLICANT).enabled(false).build();
+        Internship internship = Internship.builder().id(50L).userId(10L).build();
+
+        when(interviewRepository.findById(100L)).thenReturn(Optional.of(completedInterview));
+        when(reportRepository.findByInterviewId(100L)).thenReturn(Optional.of(report));
+        when(applicationRepository.findById(1L)).thenReturn(Optional.of(testApplication));
+        when(userRepository.findById(10L)).thenReturn(Optional.of(user));
+        when(reportRepository.save(any(InterviewReport.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(internshipService.createForNewIntern(10L)).thenReturn(internship);
+        when(roleChangeHistoryRepository.save(any(RoleChangeHistory.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        interviewService.manualReview(100L, true, "表现优秀", null, null);
+
+        ArgumentCaptor<RoleChangeHistory> captor = ArgumentCaptor.forClass(RoleChangeHistory.class);
+        verify(roleChangeHistoryRepository).save(captor.capture());
+        RoleChangeHistory history = captor.getValue();
+        assertEquals(10L, history.getUserId());
+        assertEquals(Role.APPLICANT, history.getOldRole());
+        assertEquals(Role.INTERN, history.getNewRole());
+        assertEquals("system", history.getChangedBy());
+    }
+
+    @Test
+    void manualReview_rejected_shouldNotRecordRoleChangeHistory() {
+        Interview completedInterview = Interview.builder()
+                .id(100L).applicationId(1L).userId(10L)
+                .status(InterviewStatus.COMPLETED).build();
+        InterviewReport report = InterviewReport.builder()
+                .id(1L).interviewId(100L).totalScore(3).build();
+        User user = User.builder().id(10L).username("candidate").role(Role.APPLICANT).enabled(false).build();
+
+        when(interviewRepository.findById(100L)).thenReturn(Optional.of(completedInterview));
+        when(reportRepository.findByInterviewId(100L)).thenReturn(Optional.of(report));
+        when(applicationRepository.findById(1L)).thenReturn(Optional.of(testApplication));
+        when(userRepository.findById(10L)).thenReturn(Optional.of(user));
+        when(reportRepository.save(any(InterviewReport.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        interviewService.manualReview(100L, false, "不合格", null, null);
+
+        verify(roleChangeHistoryRepository, never()).save(any(RoleChangeHistory.class));
     }
 }

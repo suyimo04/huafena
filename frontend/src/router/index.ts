@@ -106,6 +106,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, roles: ['ADMIN', 'LEADER', 'VICE_LEADER'] },
       },
       {
+        path: 'reports',
+        name: 'Reports',
+        component: () => import('@/views/ReportsPage.vue'),
+        meta: { requiresAuth: true, roles: ['ADMIN', 'LEADER'] },
+      },
+      {
         path: 'system/users',
         name: 'SystemUsers',
         component: () => import('@/views/SystemUsersPage.vue'),

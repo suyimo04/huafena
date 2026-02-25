@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class RecommendationLabelProperties {
 
-    private final InterviewServiceImpl service = new InterviewServiceImpl(null, null, null, null, null, null, null);
+    private final InterviewServiceImpl service = new InterviewServiceImpl(null, null, null, null, null, null, null, null);
 
     /**
      * Property 17a: Scores >= 8 always produce "建议通过".

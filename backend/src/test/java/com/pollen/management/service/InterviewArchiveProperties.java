@@ -38,7 +38,8 @@ class InterviewArchiveProperties {
         InterviewScenarioService scenarioService = Mockito.mock(InterviewScenarioService.class);
         UserRepository userRepo = Mockito.mock(UserRepository.class);
         InternshipService internshipService = Mockito.mock(InternshipService.class);
-        return new InterviewServiceImpl(interviewRepo, messageRepo, reportRepo, appRepo, scenarioService, userRepo, internshipService);
+        RoleChangeHistoryRepository roleChangeHistoryRepo = Mockito.mock(RoleChangeHistoryRepository.class);
+        return new InterviewServiceImpl(interviewRepo, messageRepo, reportRepo, appRepo, scenarioService, userRepo, internshipService, roleChangeHistoryRepo);
     }
 
     // ========== Property 18a: Full record with messages and report is returned intact ==========

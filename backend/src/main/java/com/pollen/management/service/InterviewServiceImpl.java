@@ -7,6 +7,7 @@ import com.pollen.management.entity.enums.ApplicationStatus;
 import com.pollen.management.entity.enums.InterviewStatus;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.*;
+import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.util.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final InterviewScenarioService scenarioService;
     private final UserRepository userRepository;
     private final InternshipService internshipService;
+    private final RoleChangeHistoryRepository roleChangeHistoryRepository;
 
     public InterviewServiceImpl(InterviewRepository interviewRepository,
                                 InterviewMessageRepository messageRepository,
@@ -36,7 +38,8 @@ public class InterviewServiceImpl implements InterviewService {
                                 ApplicationRepository applicationRepository,
                                 InterviewScenarioService scenarioService,
                                 UserRepository userRepository,
-                                InternshipService internshipService) {
+                                InternshipService internshipService,
+                                RoleChangeHistoryRepository roleChangeHistoryRepository) {
         this.interviewRepository = interviewRepository;
         this.messageRepository = messageRepository;
         this.reportRepository = reportRepository;
@@ -44,6 +47,7 @@ public class InterviewServiceImpl implements InterviewService {
         this.scenarioService = scenarioService;
         this.userRepository = userRepository;
         this.internshipService = internshipService;
+        this.roleChangeHistoryRepository = roleChangeHistoryRepository;
     }
 
     @Override
@@ -221,10 +225,19 @@ public class InterviewServiceImpl implements InterviewService {
         if (approved) {
             // 复审通过：发送实习邀请通知，角色变更为 INTERN
             application.setStatus(ApplicationStatus.INTERN_OFFERED);
+            Role oldRole = user.getRole();
             user.setRole(Role.INTERN);
             user.setEnabled(true);
             applicationRepository.save(application);
             userRepository.save(user);
+
+            // 记录角色变更历史
+            roleChangeHistoryRepository.save(RoleChangeHistory.builder()
+                    .userId(user.getId())
+                    .oldRole(oldRole)
+                    .newRole(Role.INTERN)
+                    .changedBy("system")
+                    .build());
 
             // 自动创建实习记录
             try {

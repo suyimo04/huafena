@@ -1,10 +1,12 @@
 package com.pollen.management.service;
 
 import com.pollen.management.entity.PointsRecord;
+import com.pollen.management.entity.RoleChangeHistory;
 import com.pollen.management.entity.SalaryRecord;
 import com.pollen.management.entity.User;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.PointsRecordRepository;
+import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.repository.SalaryRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
@@ -48,6 +50,7 @@ public class MemberRotationServiceImpl implements MemberRotationService {
     private final UserRepository userRepository;
     private final PointsRecordRepository pointsRecordRepository;
     private final SalaryRecordRepository salaryRecordRepository;
+    private final RoleChangeHistoryRepository roleChangeHistoryRepository;
 
     @Override
     public List<User> checkPromotionEligibility() {
@@ -110,11 +113,28 @@ public class MemberRotationServiceImpl implements MemberRotationService {
         }
 
         // 执行角色互换
+        Role internOldRole = intern.getRole();
+        Role formalMemberOldRole = formalMember.getRole();
+
         intern.setRole(Role.MEMBER);
         formalMember.setRole(Role.INTERN);
 
         userRepository.save(intern);
         userRepository.save(formalMember);
+
+        // 记录角色变更历史
+        roleChangeHistoryRepository.save(RoleChangeHistory.builder()
+                .userId(intern.getId())
+                .oldRole(internOldRole)
+                .newRole(Role.MEMBER)
+                .changedBy("system")
+                .build());
+        roleChangeHistoryRepository.save(RoleChangeHistory.builder()
+                .userId(formalMember.getId())
+                .oldRole(formalMemberOldRole)
+                .newRole(Role.INTERN)
+                .changedBy("system")
+                .build());
 
         // 验证正式成员总数仍为 5
         long formalCount = userRepository.countByRole(Role.MEMBER) + userRepository.countByRole(Role.VICE_LEADER);
