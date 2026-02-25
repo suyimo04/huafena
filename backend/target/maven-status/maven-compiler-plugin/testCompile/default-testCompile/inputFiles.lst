@@ -31,6 +31,7 @@ E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ExcelExportPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\InternshipCompletionPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\MemberStatusPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\RedisCacheConsistencyPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\WeeklyReportAggregationPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\security\JwtAndRbacProperties.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\security\PasswordEncryptionProperties.java

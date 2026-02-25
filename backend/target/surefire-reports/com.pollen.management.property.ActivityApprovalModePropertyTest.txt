@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.pollen.management.property.ActivityApprovalModePropertyTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.043 s -- in com.pollen.management.property.ActivityApprovalModePropertyTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.886 s -- in com.pollen.management.property.ActivityApprovalModePropertyTest

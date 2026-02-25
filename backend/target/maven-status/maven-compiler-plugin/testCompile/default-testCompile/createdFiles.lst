@@ -16,6 +16,7 @@ com\pollen\management\controller\PublicQuestionnaireControllerTest.class
 com\pollen\management\service\CacheAnnotationTest$DashboardServiceCacheTests.class
 com\pollen\management\service\QuestionnaireTemplateServiceImplTest.class
 com\pollen\management\config\RedisConfigTest.class
+com\pollen\management\property\RedisCacheConsistencyPropertyTest$CrossServiceMutation.class
 com\pollen\management\service\EmailSenderTest.class
 com\pollen\management\service\MemberRotationServiceImplTest.class
 com\pollen\management\service\InterviewScenarioServiceImplTest$1.class
@@ -33,6 +34,7 @@ com\pollen\management\service\ApplicationListAndPublicLinkProperties.class
 com\pollen\management\service\QuestionnaireDesignPermissionProperties.class
 com\pollen\management\controller\ActivityControllerTest.class
 com\pollen\management\security\RateLimitFilterTest.class
+com\pollen\management\property\RedisCacheConsistencyPropertyTest$CacheOperation.class
 com\pollen\management\service\EmailRateLimiterImplTest.class
 com\pollen\management\util\EncryptedIntegerConverterTest.class
 com\pollen\management\controller\EmailControllerTest.class
@@ -53,6 +55,7 @@ com\pollen\management\controller\MemberControllerTest.class
 com\pollen\management\property\ApplicationTimelinePropertyTest.class
 com\pollen\management\property\AesEncryptionPropertyTest.class
 com\pollen\management\property\BatchOperationPropertyTest.class
+com\pollen\management\property\RedisCacheConsistencyPropertyTest$CachedServiceInfo.class
 com\pollen\management\entity\MemberEnhancedEntityTest.class
 com\pollen\management\service\FormalMemberCountProperties$InvalidCountScenario.class
 com\pollen\management\service\FormalMemberCountProperties$SwapPair.class
@@ -64,6 +67,8 @@ com\pollen\management\PollenManagementApplicationTests.class
 com\pollen\management\controller\QuestionnaireTemplateControllerTest.class
 com\pollen\management\entity\InternshipEntityTest.class
 com\pollen\management\controller\SalaryControllerTest.class
+com\pollen\management\property\RedisCacheConsistencyPropertyTest.class
+com\pollen\management\property\RedisCacheConsistencyPropertyTest$EvictMethodInfo.class
 com\pollen\management\service\QuestionnaireResponseRoundTripProperties.class
 com\pollen\management\controller\DashboardControllerTest.class
 com\pollen\management\controller\ReportControllerTest.class
