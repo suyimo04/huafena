@@ -1,0 +1,10 @@
+.kiro/specs/pollen-group-management/.config.kiro
+.kiro/specs/pollen-group-management/design.md
+.kiro/specs/pollen-group-management/requirements.md
+.kiro/specs/pollen-group-management/tasks.md
+.kiro\specs\pollen-group-management\.config.kiro
+backend\.jqwik-database
+backend\target\classes
+backend\target\generated-sources
+backend\target\maven-status
+backend\target\test-classes
