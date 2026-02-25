@@ -12,8 +12,8 @@
         :router="true"
         class="sidebar-menu"
         background-color="transparent"
-        text-color="#374151"
-        active-text-color="#10b981"
+        text-color="#555"
+        active-text-color="#e91e63"
         :default-openeds="defaultOpeneds"
         unique-opened
       >
@@ -250,16 +250,16 @@ function handleCommand(command: string) {
 <style scoped>
 .layout-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffff, #f8fafc, #ecfdf5, #f0fdf4);
+  background: #f5f5f5;
 }
 
 .layout-aside {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(16, 185, 129, 0.1);
+  background: #fff;
+  border-right: 1px solid #f0e0e6;
   transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
+  box-shadow: 2px 0 12px rgba(233, 30, 99, 0.04);
 }
 
 .logo-area {
@@ -267,15 +267,17 @@ function handleCommand(command: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+  border-bottom: 1px solid #f0e0e6;
   padding: 0 16px;
+  background: #fff;
 }
 
 .logo-text {
   font-size: 16px;
-  font-weight: 600;
-  color: #10b981;
+  font-weight: 700;
+  color: #e91e63;
   white-space: nowrap;
+  letter-spacing: 0.5px;
 }
 
 .logo-icon {
@@ -286,24 +288,45 @@ function handleCommand(command: string) {
   border-right: none;
   flex: 1;
   overflow-y: auto;
+  padding-top: 6px;
 }
 
 .sidebar-menu :deep(.el-menu-item) {
-  border-radius: 8px;
-  margin: 2px 8px;
+  border-radius: 10px;
+  margin: 2px 10px;
   height: 42px;
   line-height: 42px;
+  font-size: 13.5px;
+  transition: all 0.2s;
+}
+
+.sidebar-menu :deep(.el-menu-item:hover) {
+  background: #fff0f3;
+  color: #e91e63;
 }
 
 .sidebar-menu :deep(.el-menu-item.is-active) {
-  background: rgba(16, 185, 129, 0.1);
+  background: #fff;
+  color: #e91e63;
+  font-weight: 600;
+  border-left: 3px solid #e91e63;
+  border-radius: 0 10px 10px 0;
+  margin-left: 0;
+  padding-left: 17px !important;
 }
 
 .sidebar-menu :deep(.el-sub-menu__title) {
-  border-radius: 8px;
-  margin: 2px 8px;
+  border-radius: 10px;
+  margin: 2px 10px;
   height: 44px;
   line-height: 44px;
+  font-size: 13.5px;
+  transition: all 0.2s;
+}
+
+.sidebar-menu :deep(.el-sub-menu__title:hover) {
+  background: #fff0f3;
+  color: #e91e63;
 }
 
 .sidebar-menu :deep(.el-sub-menu .el-menu-item) {
@@ -319,6 +342,11 @@ function handleCommand(command: string) {
   padding-left: 48px !important;
 }
 
+/* Submenu arrow color */
+.sidebar-menu :deep(.el-sub-menu__icon-arrow) {
+  color: #ccc;
+}
+
 .main-container {
   display: flex;
   flex-direction: column;
@@ -326,13 +354,13 @@ function handleCommand(command: string) {
 
 .layout-header {
   height: 60px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+  background: #fff;
+  border-bottom: 1px solid #f0e0e6;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  box-shadow: 0 1px 6px rgba(233, 30, 99, 0.03);
 }
 
 .header-left,
@@ -349,19 +377,20 @@ function handleCommand(command: string) {
 }
 
 .user-avatar {
-  background: #10b981;
+  background: linear-gradient(135deg, #ec407a, #e91e63);
   color: #fff;
   font-weight: 600;
 }
 
 .username {
   font-size: 14px;
-  color: #374151;
+  color: #555;
 }
 
 .layout-main {
   padding: 20px;
   flex: 1;
   overflow-y: auto;
+  background: #fafafa;
 }
 </style>

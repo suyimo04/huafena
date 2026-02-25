@@ -1,10 +1,13 @@
+com\pollen\management\property\SalaryDimensionSummaryPropertyTest.class
 com\pollen\management\service\CheckinPointsProperties.class
+com\pollen\management\property\SalaryConfigValidationPropertyTest.class
 com\pollen\management\service\RecommendationLabelProperties.class
 com\pollen\management\service\PointsServiceImplTest.class
 com\pollen\management\service\QuestionnaireVersionProperties.class
 com\pollen\management\service\QuestionnaireResponseServiceImplTest$1.class
 com\pollen\management\service\FormalMemberCountProperties.class
 com\pollen\management\property\ExcelExportPropertyTest.class
+com\pollen\management\property\RotationThresholdEffectivenessPropertyTest.class
 com\pollen\management\service\AuthServiceImplTest.class
 com\pollen\management\service\QuestionnaireResponseRoundTripProperties$2.class
 com\pollen\management\controller\PointsControllerTest.class
@@ -16,6 +19,7 @@ com\pollen\management\controller\PublicQuestionnaireControllerTest.class
 com\pollen\management\service\CacheAnnotationTest$DashboardServiceCacheTests.class
 com\pollen\management\service\QuestionnaireTemplateServiceImplTest.class
 com\pollen\management\config\RedisConfigTest.class
+com\pollen\management\property\SalaryDimensionInputRangePropertyTest.class
 com\pollen\management\property\RedisCacheConsistencyPropertyTest$CrossServiceMutation.class
 com\pollen\management\service\EmailSenderTest.class
 com\pollen\management\service\MemberRotationServiceImplTest.class
@@ -28,10 +32,13 @@ com\pollen\management\property\ApplicationScreeningPropertyTest.class
 com\pollen\management\property\WeeklyReportAggregationPropertyTest.class
 com\pollen\management\controller\InternshipControllerTest.class
 com\pollen\management\service\DashboardServiceImplTest.class
+com\pollen\management\controller\SalaryConfigControllerTest$1.class
+com\pollen\management\property\ArchiveOperationIntegrityPropertyTest.class
 com\pollen\management\service\ApplicationCreationProperties.class
 com\pollen\management\service\CacheAnnotationTest$MemberServiceCacheTests.class
 com\pollen\management\service\ApplicationListAndPublicLinkProperties.class
 com\pollen\management\service\QuestionnaireDesignPermissionProperties.class
+com\pollen\management\property\SalaryRangeAndTotalInvariantPropertyTest$PoolAdjustedInput.class
 com\pollen\management\controller\ActivityControllerTest.class
 com\pollen\management\security\RateLimitFilterTest.class
 com\pollen\management\property\RedisCacheConsistencyPropertyTest$CacheOperation.class
@@ -40,6 +47,7 @@ com\pollen\management\util\EncryptedIntegerConverterTest.class
 com\pollen\management\controller\EmailControllerTest.class
 com\pollen\management\service\EmailServiceImplTest.class
 com\pollen\management\service\InternshipServiceImplTest.class
+com\pollen\management\property\PointsToMiniCoinsPropertyTest.class
 com\pollen\management\service\MemberServiceImplTest.class
 com\pollen\management\service\ApplicationScreeningProperties.class
 com\pollen\management\service\ApplicationTimelineServiceImplTest.class
@@ -48,8 +56,10 @@ com\pollen\management\controller\MemberRotationControllerTest.class
 com\pollen\management\service\QuestionnaireResponseRoundTripProperties$1.class
 com\pollen\management\service\ApplicationServiceImplTest.class
 com\pollen\management\service\CacheAnnotationTest$QuestionnaireServiceCacheTests.class
+com\pollen\management\property\SalaryReportCompletenessPropertyTest.class
 com\pollen\management\security\PasswordEncryptionProperties.class
 com\pollen\management\service\ExportServiceImplTest.class
+com\pollen\management\service\SalaryConfigServiceImplTest.class
 com\pollen\management\util\SalaryEncryptionTest.class
 com\pollen\management\controller\MemberControllerTest.class
 com\pollen\management\property\ApplicationTimelinePropertyTest.class
@@ -65,6 +75,7 @@ com\pollen\management\security\JwtAndRbacProperties.class
 com\pollen\management\dto\ApiResponseProperties.class
 com\pollen\management\PollenManagementApplicationTests.class
 com\pollen\management\controller\QuestionnaireTemplateControllerTest.class
+com\pollen\management\property\SalaryPoolDistributionPropertyTest.class
 com\pollen\management\entity\InternshipEntityTest.class
 com\pollen\management\controller\SalaryControllerTest.class
 com\pollen\management\property\RedisCacheConsistencyPropertyTest.class
@@ -81,6 +92,7 @@ com\pollen\management\service\ConditionalLogicProperties.class
 com\pollen\management\config\DataInitializerTest.class
 com\pollen\management\service\AuditLogProperties.class
 com\pollen\management\service\SalaryBatchSaveProperties.class
+com\pollen\management\property\CheckinTierLookupPropertyTest.class
 com\pollen\management\property\InternshipCompletionPropertyTest.class
 com\pollen\management\service\PublishAndVersionAccessProperties.class
 com\pollen\management\entity\ActivityEnhancedEntityTest.class
@@ -94,6 +106,8 @@ com\pollen\management\controller\ApplicationControllerTest.class
 com\pollen\management\service\InitialReviewProperties.class
 com\pollen\management\controller\QuestionnaireResponseControllerTest.class
 com\pollen\management\service\FieldValidationServiceTest.class
+com\pollen\management\controller\SalaryConfigControllerTest.class
+com\pollen\management\property\SalaryConfigRoundTripPropertyTest.class
 com\pollen\management\service\ReportServiceImplTest.class
 com\pollen\management\property\EmailRateLimiterPropertyTest.class
 com\pollen\management\util\AesEncryptionUtilTest.class
@@ -101,3 +115,4 @@ com\pollen\management\util\EncryptedFieldConverterTest.class
 com\pollen\management\util\EncryptedStringConverterTest.class
 com\pollen\management\property\MemberStatusPropertyTest.class
 com\pollen\management\service\PublicLinkServiceImplTest.class
+com\pollen\management\property\SalaryRangeAndTotalInvariantPropertyTest.class

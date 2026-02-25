@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.pollen.management.service.PublicLinkServiceImplTest
 -------------------------------------------------------------------------------
-Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.365 s -- in com.pollen.management.service.PublicLinkServiceImplTest
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.359 s -- in com.pollen.management.service.PublicLinkServiceImplTest

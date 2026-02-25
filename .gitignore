@@ -10,3 +10,6 @@ backend\target\maven-status
 backend\target\test-classes
 backend\src\test
 .gitignore
+.kiro\specs\salary-calculation-rules\.config.kiro
+.kiro\specs\salary-calculation-rules\design.md
+.kiro\specs\salary-calculation-rules\requirements.md

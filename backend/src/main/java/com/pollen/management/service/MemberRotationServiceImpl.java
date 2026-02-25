@@ -1,5 +1,6 @@
 package com.pollen.management.service;
 
+import com.pollen.management.dto.RotationThresholds;
 import com.pollen.management.entity.PointsRecord;
 import com.pollen.management.entity.RoleChangeHistory;
 import com.pollen.management.entity.SalaryRecord;
@@ -23,34 +24,21 @@ import java.util.List;
 /**
  * 动态成员流转服务实现
  * 实现需求 8.1：转正评议触发逻辑
+ * 流转阈值从 SalaryConfigService 动态读取（需求 6.1, 6.2）
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MemberRotationServiceImpl implements MemberRotationService {
 
-    /** 实习成员月积分转正阈值 */
-    static final int PROMOTION_POINTS_THRESHOLD = 100;
-
-    /** 正式成员薪酬降级阈值 */
-    static final int DEMOTION_SALARY_THRESHOLD = 150;
-
-    /** 降级检测需要连续不达标的月数 */
-    static final int DEMOTION_CONSECUTIVE_MONTHS = 2;
-
     /** 正式成员总数要求（VICE_LEADER + MEMBER） */
     static final int REQUIRED_FORMAL_MEMBER_COUNT = 5;
-
-    /** 实习成员待开除检测需要连续不达标的月数 */
-    static final int DISMISSAL_CONSECUTIVE_MONTHS = 2;
-
-    /** 实习成员月积分待开除阈值 */
-    static final int DISMISSAL_POINTS_THRESHOLD = 100;
 
     private final UserRepository userRepository;
     private final PointsRecordRepository pointsRecordRepository;
     private final SalaryRecordRepository salaryRecordRepository;
     private final RoleChangeHistoryRepository roleChangeHistoryRepository;
+    private final SalaryConfigService salaryConfigService;
 
     @Override
     public List<User> checkPromotionEligibility() {
@@ -149,23 +137,32 @@ public class MemberRotationServiceImpl implements MemberRotationService {
     @Override
     @Transactional
     public List<User> markForDismissal() {
+        RotationThresholds thresholds = salaryConfigService.getRotationThresholds();
+        int dismissalThreshold = thresholds.getDismissalPointsThreshold();
+        int dismissalMonths = thresholds.getDismissalConsecutiveMonths();
+
         List<User> interns = userRepository.findByRole(Role.INTERN);
         List<User> marked = new ArrayList<>();
 
         YearMonth currentMonth = YearMonth.now();
-        YearMonth lastMonth = currentMonth.minusMonths(1);
-        YearMonth twoMonthsAgo = currentMonth.minusMonths(2);
 
         for (User intern : interns) {
-            int lastMonthPoints = getMonthlyPoints(intern.getId(), lastMonth);
-            int twoMonthsAgoPoints = getMonthlyPoints(intern.getId(), twoMonthsAgo);
+            boolean allBelowThreshold = true;
+            for (int i = 1; i <= dismissalMonths; i++) {
+                YearMonth month = currentMonth.minusMonths(i);
+                int monthPoints = getMonthlyPoints(intern.getId(), month);
+                if (monthPoints >= dismissalThreshold) {
+                    allBelowThreshold = false;
+                    break;
+                }
+            }
 
-            if (lastMonthPoints < DISMISSAL_POINTS_THRESHOLD && twoMonthsAgoPoints < DISMISSAL_POINTS_THRESHOLD) {
+            if (allBelowThreshold) {
                 intern.setPendingDismissal(true);
                 userRepository.save(intern);
                 marked.add(intern);
-                log.info("实习成员 {} 连续两个月积分未达 {} 分，已标记为待开除（上月: {} 分, 前月: {} 分）",
-                        intern.getId(), DISMISSAL_POINTS_THRESHOLD, lastMonthPoints, twoMonthsAgoPoints);
+                log.info("实习成员 {} 连续 {} 个月积分未达 {} 分，已标记为待开除",
+                        intern.getId(), dismissalMonths, dismissalThreshold);
             }
         }
 
@@ -186,12 +183,13 @@ public class MemberRotationServiceImpl implements MemberRotationService {
 
     /**
      * 检测实习成员月积分是否稳定达到阈值
-     * 检查当前月的积分总和是否 >= 100
+     * 阈值从 SalaryConfigService 动态读取
      */
     boolean isMonthlyPointsStable(Long userId) {
+        RotationThresholds thresholds = salaryConfigService.getRotationThresholds();
         YearMonth currentMonth = YearMonth.now();
         int monthlyPoints = getMonthlyPoints(userId, currentMonth);
-        return monthlyPoints >= PROMOTION_POINTS_THRESHOLD;
+        return monthlyPoints >= thresholds.getPromotionPointsThreshold();
     }
 
     /**
@@ -208,21 +206,25 @@ public class MemberRotationServiceImpl implements MemberRotationService {
     }
 
     /**
-     * 检测正式成员是否连续两个月薪酬低于阈值
-     * 通过查看最近的已归档薪资记录来判断
+     * 检测正式成员是否连续多个月薪酬低于阈值
+     * 阈值和连续月数从 SalaryConfigService 动态读取
      */
     boolean hasSalaryBelowThresholdForConsecutiveMonths(Long userId) {
+        RotationThresholds thresholds = salaryConfigService.getRotationThresholds();
+        int consecutiveMonths = thresholds.getDemotionConsecutiveMonths();
+        int salaryThreshold = thresholds.getDemotionSalaryThreshold();
+
         List<SalaryRecord> archivedRecords = salaryRecordRepository
                 .findByUserIdAndArchivedTrueOrderByArchivedAtDesc(userId);
 
-        if (archivedRecords.size() < DEMOTION_CONSECUTIVE_MONTHS) {
+        if (archivedRecords.size() < consecutiveMonths) {
             return false;
         }
 
-        // 检查最近两条归档记录的总积分是否都低于阈值
-        for (int i = 0; i < DEMOTION_CONSECUTIVE_MONTHS; i++) {
+        // 检查最近 N 条归档记录的总积分是否都低于阈值
+        for (int i = 0; i < consecutiveMonths; i++) {
             SalaryRecord record = archivedRecords.get(i);
-            if (record.getTotalPoints() >= DEMOTION_SALARY_THRESHOLD) {
+            if (record.getTotalPoints() >= salaryThreshold) {
                 return false;
             }
         }

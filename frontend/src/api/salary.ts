@@ -13,6 +13,19 @@ export interface SalaryRecord {
   remark: string | null
   version: number
   archived: boolean
+  // 基础职责维度明细
+  communityActivityPoints: number
+  checkinCount: number
+  checkinPoints: number
+  violationHandlingCount: number
+  violationHandlingPoints: number
+  taskCompletionPoints: number
+  announcementCount: number
+  announcementPoints: number
+  // 卓越贡献维度明细
+  eventHostingPoints: number
+  birthdayBonusPoints: number
+  monthlyExcellentPoints: number
 }
 
 export interface BatchSaveRequest {
@@ -34,8 +47,40 @@ export interface BatchSaveResponse {
   violatingUserIds: number[]
 }
 
+export interface SalaryMemberDTO {
+  id: number | null
+  userId: number
+  username: string
+  role: string
+  basePoints: number
+  bonusPoints: number
+  deductions: number
+  totalPoints: number
+  miniCoins: number
+  salaryAmount: number
+  remark: string | null
+  version: number | null
+  // 基础职责维度明细
+  communityActivityPoints: number
+  checkinCount: number
+  checkinPoints: number
+  violationHandlingCount: number
+  violationHandlingPoints: number
+  taskCompletionPoints: number
+  announcementCount: number
+  announcementPoints: number
+  // 卓越贡献维度明细
+  eventHostingPoints: number
+  birthdayBonusPoints: number
+  monthlyExcellentPoints: number
+}
+
 export function getSalaryList(): Promise<ApiResponse<SalaryRecord[]>> {
   return http.get('/salary/list')
+}
+
+export function getSalaryMembers(): Promise<ApiResponse<SalaryMemberDTO[]>> {
+  return http.get('/salary/members')
 }
 
 export function updateSalaryRecord(id: number, data: Partial<SalaryRecord>): Promise<ApiResponse<SalaryRecord>> {

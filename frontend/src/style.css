@@ -42,6 +42,30 @@ body {
   --el-color-primary-dark-2: #059669;
 }
 
+/* ---- Global el-table pink theme (matching SalaryPage design) ---- */
+.el-table {
+  --el-table-border-color: #fce4ec;
+  --el-table-header-bg-color: #fff5f7;
+  --el-table-row-hover-bg-color: #fff0f3;
+  --el-table-bg-color: #fff;
+  --el-table-tr-bg-color: #fff;
+  --el-fill-color-lighter: #fff5f7;
+  font-size: 13px;
+}
+.el-table .el-table__header th {
+  background: #fff5f7 !important;
+  color: #4a4a4a;
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 2px solid #fce4ec !important;
+}
+.el-table .el-table__body td {
+  border-bottom: 1px solid #fce4ec;
+}
+.el-table .el-table__row:hover > td {
+  background: #fff0f3 !important;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;

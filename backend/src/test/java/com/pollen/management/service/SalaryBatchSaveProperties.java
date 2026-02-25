@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 /**
  * Feature: pollen-group-management, Property 21: 薪资批量保存验证
@@ -32,7 +33,11 @@ class SalaryBatchSaveProperties {
         UserRepository userRepo = Mockito.mock(UserRepository.class);
         PointsService pointsService = Mockito.mock(PointsService.class);
         AuditLogRepository auditLogRepo = Mockito.mock(AuditLogRepository.class);
-        return new SalaryServiceImpl(salaryRepo, userRepo, pointsService, auditLogRepo);
+        SalaryConfigService salaryConfigService = Mockito.mock(SalaryConfigService.class);
+        when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
+        when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
+        when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        return new SalaryServiceImpl(salaryRepo, userRepo, pointsService, auditLogRepo, salaryConfigService);
     }
 
     // ========== Property 21a: Valid batch passes validation ==========

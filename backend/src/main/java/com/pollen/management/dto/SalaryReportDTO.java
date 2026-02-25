@@ -29,6 +29,9 @@ public class SalaryReportDTO {
     /** 实际分配总额（迷你币） */
     private int allocatedTotal;
 
+    /** 剩余额度（迷你币） */
+    private int remainingAmount;
+
     /** 成员明细列表 */
     @Builder.Default
     private List<MemberSalaryDetail> details = new ArrayList<>();
@@ -67,5 +70,20 @@ public class SalaryReportDTO {
 
         /** 备注 */
         private String remark;
+
+        // 基础职责维度明细
+        private int communityActivityPoints;
+        private int checkinCount;
+        private int checkinPoints;
+        private int violationHandlingCount;
+        private int violationHandlingPoints;
+        private int taskCompletionPoints;
+        private int announcementCount;
+        private int announcementPoints;
+
+        // 卓越贡献维度明细
+        private int eventHostingPoints;
+        private int birthdayBonusPoints;
+        private int monthlyExcellentPoints;
     }
 }

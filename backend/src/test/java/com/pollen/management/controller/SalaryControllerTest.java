@@ -57,6 +57,38 @@ class SalaryControllerTest {
                 .hasMessage("正式成员数量不足");
     }
 
+    // --- POST /api/salary/calculate-distribute ---
+
+    @Test
+    void calculateAndDistribute_shouldDelegateToServiceAndReturnSuccess() {
+        List<SalaryRecord> records = List.of(
+                SalaryRecord.builder().id(1L).userId(10L).totalPoints(200).miniCoins(400)
+                        .communityActivityPoints(80).checkinCount(45).checkinPoints(30).build(),
+                SalaryRecord.builder().id(2L).userId(11L).totalPoints(150).miniCoins(300)
+                        .communityActivityPoints(60).checkinCount(35).checkinPoints(0).build()
+        );
+        when(salaryService.calculateAndDistribute()).thenReturn(records);
+
+        ApiResponse<List<SalaryRecord>> response = controller.calculateAndDistribute();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getMessage()).isEqualTo("success");
+        assertThat(response.getData()).hasSize(2);
+        assertThat(response.getData().get(0).getCommunityActivityPoints()).isEqualTo(80);
+        assertThat(response.getData().get(0).getCheckinPoints()).isEqualTo(30);
+        verify(salaryService).calculateAndDistribute();
+    }
+
+    @Test
+    void calculateAndDistribute_noRecords_shouldPropagateException() {
+        when(salaryService.calculateAndDistribute())
+                .thenThrow(new BusinessException(404, "当前没有未归档的薪资记录"));
+
+        assertThatThrownBy(() -> controller.calculateAndDistribute())
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("当前没有未归档的薪资记录");
+    }
+
     // --- GET /api/salary/list ---
 
     @Test

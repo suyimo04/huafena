@@ -1,5 +1,6 @@
 package com.pollen.management.service;
 
+import com.pollen.management.dto.RotationThresholds;
 import com.pollen.management.entity.PointsRecord;
 import com.pollen.management.entity.RoleChangeHistory;
 import com.pollen.management.entity.SalaryRecord;
@@ -10,6 +11,7 @@ import com.pollen.management.repository.RoleChangeHistoryRepository;
 import com.pollen.management.repository.SalaryRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,8 +44,24 @@ class MemberRotationServiceImplTest {
     @Mock
     private RoleChangeHistoryRepository roleChangeHistoryRepository;
 
+    @Mock
+    private SalaryConfigService salaryConfigService;
+
     @InjectMocks
     private MemberRotationServiceImpl memberRotationService;
+
+    private static final RotationThresholds DEFAULT_THRESHOLDS = RotationThresholds.builder()
+            .promotionPointsThreshold(100)
+            .demotionSalaryThreshold(150)
+            .demotionConsecutiveMonths(2)
+            .dismissalPointsThreshold(100)
+            .dismissalConsecutiveMonths(2)
+            .build();
+
+    @BeforeEach
+    void setUp() {
+        lenient().when(salaryConfigService.getRotationThresholds()).thenReturn(DEFAULT_THRESHOLDS);
+    }
 
     // --- checkPromotionEligibility tests ---
 
@@ -536,21 +554,14 @@ class MemberRotationServiceImplTest {
         when(userRepository.findByRole(Role.INTERN)).thenReturn(List.of(intern));
 
         PointsRecord r1 = PointsRecord.builder().userId(1L).amount(120).build();
-        PointsRecord r2 = PointsRecord.builder().userId(1L).amount(70).build();
 
         YearMonth lastMonth = YearMonth.now().minusMonths(1);
-        YearMonth twoMonthsAgo = YearMonth.now().minusMonths(2);
 
         when(pointsRecordRepository.findByUserIdAndCreatedAtBetween(
                 eq(1L),
                 eq(lastMonth.atDay(1).atStartOfDay()),
                 eq(lastMonth.atEndOfMonth().atTime(23, 59, 59))))
                 .thenReturn(List.of(r1));
-        when(pointsRecordRepository.findByUserIdAndCreatedAtBetween(
-                eq(1L),
-                eq(twoMonthsAgo.atDay(1).atStartOfDay()),
-                eq(twoMonthsAgo.atEndOfMonth().atTime(23, 59, 59))))
-                .thenReturn(List.of(r2));
 
         List<User> marked = memberRotationService.markForDismissal();
 
@@ -564,21 +575,14 @@ class MemberRotationServiceImplTest {
         when(userRepository.findByRole(Role.INTERN)).thenReturn(List.of(intern));
 
         PointsRecord r1 = PointsRecord.builder().userId(1L).amount(150).build();
-        PointsRecord r2 = PointsRecord.builder().userId(1L).amount(110).build();
 
         YearMonth lastMonth = YearMonth.now().minusMonths(1);
-        YearMonth twoMonthsAgo = YearMonth.now().minusMonths(2);
 
         when(pointsRecordRepository.findByUserIdAndCreatedAtBetween(
                 eq(1L),
                 eq(lastMonth.atDay(1).atStartOfDay()),
                 eq(lastMonth.atEndOfMonth().atTime(23, 59, 59))))
                 .thenReturn(List.of(r1));
-        when(pointsRecordRepository.findByUserIdAndCreatedAtBetween(
-                eq(1L),
-                eq(twoMonthsAgo.atDay(1).atStartOfDay()),
-                eq(twoMonthsAgo.atEndOfMonth().atTime(23, 59, 59))))
-                .thenReturn(List.of(r2));
 
         List<User> marked = memberRotationService.markForDismissal();
 
@@ -600,21 +604,14 @@ class MemberRotationServiceImplTest {
         when(userRepository.findByRole(Role.INTERN)).thenReturn(List.of(intern));
 
         PointsRecord r1 = PointsRecord.builder().userId(1L).amount(100).build();
-        PointsRecord r2 = PointsRecord.builder().userId(1L).amount(100).build();
 
         YearMonth lastMonth = YearMonth.now().minusMonths(1);
-        YearMonth twoMonthsAgo = YearMonth.now().minusMonths(2);
 
         when(pointsRecordRepository.findByUserIdAndCreatedAtBetween(
                 eq(1L),
                 eq(lastMonth.atDay(1).atStartOfDay()),
                 eq(lastMonth.atEndOfMonth().atTime(23, 59, 59))))
                 .thenReturn(List.of(r1));
-        when(pointsRecordRepository.findByUserIdAndCreatedAtBetween(
-                eq(1L),
-                eq(twoMonthsAgo.atDay(1).atStartOfDay()),
-                eq(twoMonthsAgo.atEndOfMonth().atTime(23, 59, 59))))
-                .thenReturn(List.of(r2));
 
         List<User> marked = memberRotationService.markForDismissal();
 

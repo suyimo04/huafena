@@ -34,6 +34,18 @@ public class SalaryController {
     }
 
     /**
+     * 整合维度计算 + 薪酬池分配
+     * 基于已录入的维度明细数据，自动计算各维度积分并执行薪酬池分配
+     * 仅 ADMIN/LEADER 可操作
+     */
+    @PostMapping("/calculate-distribute")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
+    public ApiResponse<List<SalaryRecord>> calculateAndDistribute() {
+        List<SalaryRecord> records = salaryService.calculateAndDistribute();
+        return ApiResponse.success(records);
+    }
+
+    /**
      * 获取薪资列表
      * LEADER、VICE_LEADER、MEMBER 可查看
      */
@@ -41,6 +53,16 @@ public class SalaryController {
     public ApiResponse<List<SalaryRecord>> getSalaryList() {
         List<SalaryRecord> records = salaryService.getSalaryList();
         return ApiResponse.success(records);
+    }
+
+    /**
+     * 获取薪资管理成员列表（按角色分组，含用户名）
+     * ADMIN、LEADER、VICE_LEADER 可查看
+     */
+    @GetMapping("/members")
+    public ApiResponse<List<SalaryMemberDTO>> getSalaryMembers() {
+        List<SalaryMemberDTO> members = salaryService.getSalaryMembers();
+        return ApiResponse.success(members);
     }
 
     /**

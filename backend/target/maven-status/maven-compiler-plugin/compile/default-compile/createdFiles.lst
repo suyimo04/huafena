@@ -10,6 +10,7 @@ com\pollen\management\config\SecurityConfig.class
 com\pollen\management\repository\RoleChangeHistoryRepository.class
 com\pollen\management\repository\AuditLogRepository.class
 com\pollen\management\entity\PublicLink$PublicLinkBuilder.class
+com\pollen\management\dto\SalaryMemberDTO.class
 com\pollen\management\dto\FeedbackRequest.class
 com\pollen\management\entity\enums\InternshipStatus.class
 com\pollen\management\config\package-info.class
@@ -56,9 +57,11 @@ com\pollen\management\dto\InterviewScenario.class
 com\pollen\management\controller\PointsController.class
 com\pollen\management\dto\UpdateOnlineStatusRequest.class
 com\pollen\management\dto\CreateTemplateRequest$CreateTemplateRequestBuilder.class
+com\pollen\management\service\SalaryConfigService.class
 com\pollen\management\service\ExportServiceImpl.class
 com\pollen\management\controller\InterviewController.class
 com\pollen\management\dto\CreateInternshipTaskRequest$CreateInternshipTaskRequestBuilder.class
+com\pollen\management\controller\SalaryConfigController.class
 com\pollen\management\entity\SalaryRecord$SalaryRecordBuilder.class
 com\pollen\management\dto\PublicSubmitRequest.class
 com\pollen\management\repository\ActivityFeedbackRepository.class
@@ -79,8 +82,10 @@ com\pollen\management\security\JwtUtil.class
 com\pollen\management\controller\InternshipController.class
 com\pollen\management\dto\UpdateTemplateRequest$UpdateTemplateRequestBuilder.class
 com\pollen\management\dto\ApplicationFormData.class
+com\pollen\management\entity\SalaryConfig.class
 com\pollen\management\entity\enums\CloudSyncStatus.class
 com\pollen\management\dto\RegisterRequest.class
+com\pollen\management\dto\SalaryMemberDTO$SalaryMemberDTOBuilder.class
 com\pollen\management\repository\UserRepository.class
 com\pollen\management\service\EmailSender.class
 com\pollen\management\entity\BackupRecord.class
@@ -105,12 +110,14 @@ com\pollen\management\PollenManagementApplication.class
 com\pollen\management\dto\BatchSaveResponse$ValidationError$ValidationErrorBuilder.class
 com\pollen\management\entity\InterviewReport$InterviewReportBuilder.class
 com\pollen\management\dto\StartInterviewRequest.class
+com\pollen\management\dto\CheckinTier.class
 com\pollen\management\entity\enums\EntryType.class
 com\pollen\management\repository\ApplicationTimelineRepository.class
 com\pollen\management\entity\InternshipTask.class
 com\pollen\management\entity\enums\ApprovalMode.class
 com\pollen\management\entity\InterviewMessage$InterviewMessageBuilder.class
 com\pollen\management\entity\QuestionnaireResponse$QuestionnaireResponseBuilder.class
+com\pollen\management\service\SalaryConfigServiceImpl.class
 com\pollen\management\entity\ActivityMaterial$ActivityMaterialBuilder.class
 com\pollen\management\service\ActivityService.class
 com\pollen\management\service\BackupServiceImpl.class
@@ -140,8 +147,10 @@ com\pollen\management\entity\enums\ActivityStatus.class
 com\pollen\management\dto\BatchSaveResponse$ValidationError.class
 com\pollen\management\entity\UserActivityLog.class
 com\pollen\management\controller\MemberController.class
+com\pollen\management\repository\SalaryConfigRepository.class
 com\pollen\management\dto\MemberSalaryRank.class
 com\pollen\management\dto\InternshipListItem.class
+com\pollen\management\dto\SalaryDimensionInput$SalaryDimensionInputBuilder.class
 com\pollen\management\dto\InterviewScenario$InterviewScenarioBuilder.class
 com\pollen\management\dto\LoginResponse.class
 com\pollen\management\service\EmailConfigServiceImpl.class
@@ -164,6 +173,7 @@ com\pollen\management\dto\EmailLogQueryRequest.class
 com\pollen\management\entity\ApplicationTimeline$ApplicationTimelineBuilder.class
 com\pollen\management\dto\ApplicationDetailDTO.class
 com\pollen\management\service\InterviewScenarioServiceImpl$1.class
+com\pollen\management\dto\RotationThresholds.class
 com\pollen\management\dto\SalaryStatsDTO.class
 com\pollen\management\dto\ApiResponse.class
 com\pollen\management\entity\Activity.class
@@ -178,6 +188,7 @@ com\pollen\management\dto\MemberSalaryRank$MemberSalaryRankBuilder.class
 com\pollen\management\util\BusinessException.class
 com\pollen\management\controller\QuestionnaireTemplateController.class
 com\pollen\management\dto\CreateActivityRequest$CreateActivityRequestBuilder.class
+com\pollen\management\dto\SalaryCalculationResult.class
 com\pollen\management\service\MemberService.class
 com\pollen\management\entity\Interview$InterviewBuilder.class
 com\pollen\management\util\package-info.class
@@ -206,6 +217,7 @@ com\pollen\management\service\AuditLogServiceImpl.class
 com\pollen\management\controller\PublicQuestionnaireController.class
 com\pollen\management\entity\package-info.class
 com\pollen\management\dto\SubmitResponseRequest$SubmitResponseRequestBuilder.class
+com\pollen\management\service\SalaryServiceImpl$1.class
 com\pollen\management\entity\QuestionnaireVersion.class
 com\pollen\management\dto\InterviewMessageRequest.class
 com\pollen\management\dto\ApplicationListItemDTO$ApplicationListItemDTOBuilder.class
@@ -213,6 +225,7 @@ com\pollen\management\controller\AuthController.class
 com\pollen\management\service\InternshipService.class
 com\pollen\management\service\EmailRateLimiter.class
 com\pollen\management\entity\InternshipTask$InternshipTaskBuilder.class
+com\pollen\management\dto\RotationThresholds$RotationThresholdsBuilder.class
 com\pollen\management\service\EmailRateLimiterImpl.class
 com\pollen\management\dto\OperationsDataDTO$OperationsDataDTOBuilder.class
 com\pollen\management\entity\WeeklyReport$WeeklyReportBuilder.class
@@ -244,6 +257,7 @@ com\pollen\management\entity\enums\Role.class
 com\pollen\management\entity\InterviewMessage.class
 com\pollen\management\service\MemberRotationService.class
 com\pollen\management\dto\RecruitmentStatsDTO.class
+com\pollen\management\dto\SalaryDimensionInput.class
 com\pollen\management\repository\ActivityMaterialRepository.class
 com\pollen\management\service\QuestionnaireResponseServiceImpl.class
 com\pollen\management\config\RedisConfig.class
@@ -262,8 +276,12 @@ com\pollen\management\dto\DashboardStatsDTO.class
 com\pollen\management\entity\Application.class
 com\pollen\management\service\ExportService.class
 com\pollen\management\service\ConditionalLogicEvaluator.class
+com\pollen\management\service\SalaryConfigServiceImpl$1.class
 com\pollen\management\repository\EmailConfigRepository.class
+com\pollen\management\dto\SalaryCalculationResult$SalaryCalculationResultBuilder.class
 com\pollen\management\entity\RoleChangeHistory$RoleChangeHistoryBuilder.class
+com\pollen\management\entity\SalaryConfig$SalaryConfigBuilder.class
+com\pollen\management\dto\CheckinTier$CheckinTierBuilder.class
 com\pollen\management\repository\SalaryRecordRepository.class
 com\pollen\management\dto\BatchSaveRequest.class
 com\pollen\management\controller\QuestionnaireResponseController.class
