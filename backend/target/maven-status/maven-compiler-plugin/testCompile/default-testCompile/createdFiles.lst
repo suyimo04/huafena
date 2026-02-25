@@ -57,6 +57,7 @@ com\pollen\management\service\QuestionnaireResponseServiceImplTest.class
 com\pollen\management\service\LoginLogicProperties.class
 com\pollen\management\service\SalaryServiceImplTest.class
 com\pollen\management\service\EmailRateLimiterImplTest.class
+com\pollen\management\property\ActivityApprovalModePropertyTest.class
 com\pollen\management\service\AuditLogServiceImplTest.class
 com\pollen\management\controller\EmailControllerTest.class
 com\pollen\management\service\EmailServiceImplTest.class

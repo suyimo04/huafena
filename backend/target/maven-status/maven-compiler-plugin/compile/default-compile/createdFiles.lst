@@ -32,6 +32,7 @@ com\pollen\management\dto\CreateApplicationRequest$CreateApplicationRequestBuild
 com\pollen\management\dto\DashboardStatsDTO$DashboardStatsDTOBuilder.class
 com\pollen\management\service\ApplicationScreeningService.class
 com\pollen\management\dto\ExecutePromotionRequest$ExecutePromotionRequestBuilder.class
+com\pollen\management\dto\UpdateGroupMembersRequest$UpdateGroupMembersRequestBuilder.class
 com\pollen\management\dto\DeductPointsRequest$DeductPointsRequestBuilder.class
 com\pollen\management\dto\ExecutePromotionRequest.class
 com\pollen\management\service\ApplicationTimelineServiceImpl.class
@@ -106,6 +107,7 @@ com\pollen\management\repository\ApplicationRepository.class
 com\pollen\management\dto\LoginRequest.class
 com\pollen\management\dto\package-info.class
 com\pollen\management\service\QuestionnaireTemplateService.class
+com\pollen\management\dto\UpdateGroupMembersRequest.class
 com\pollen\management\service\QuestionnaireTemplateServiceImpl.class
 com\pollen\management\entity\EmailTemplate.class
 com\pollen\management\service\EmailService.class
@@ -186,6 +188,7 @@ com\pollen\management\dto\CreateApplicationRequest.class
 com\pollen\management\entity\EmailLog.class
 com\pollen\management\util\EncryptedStringConverter.class
 com\pollen\management\entity\enums\InterviewStatus.class
+com\pollen\management\dto\CreateGroupRequest.class
 com\pollen\management\entity\Application$ApplicationBuilder.class
 com\pollen\management\service\MemberRotationServiceImpl.class
 com\pollen\management\util\EncryptedFieldConverter.class
@@ -241,4 +244,5 @@ com\pollen\management\dto\AddPointsRequest$AddPointsRequestBuilder.class
 com\pollen\management\dto\GeneratePublicLinkRequest.class
 com\pollen\management\entity\enums\ExamType.class
 com\pollen\management\controller\ActivityController.class
+com\pollen\management\dto\CreateGroupRequest$CreateGroupRequestBuilder.class
 com\pollen\management\service\AuthServiceImpl.class
