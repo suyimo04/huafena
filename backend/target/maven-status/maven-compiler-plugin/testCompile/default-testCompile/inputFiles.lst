@@ -15,6 +15,7 @@ E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\dto\ApiRe
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\entity\ActivityEnhancedEntityTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\entity\InternshipEntityTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\PollenManagementApplicationTests.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ActivityApprovalModePropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\AesEncryptionPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ApplicationScreeningPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ApplicationTimelinePropertyTest.java

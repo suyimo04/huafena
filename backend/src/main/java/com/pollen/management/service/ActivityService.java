@@ -1,8 +1,10 @@
 package com.pollen.management.service;
 
 import com.pollen.management.entity.Activity;
+import com.pollen.management.entity.ActivityFeedback;
 import com.pollen.management.entity.ActivityGroup;
 import com.pollen.management.entity.ActivityRegistration;
+import com.pollen.management.dto.FeedbackRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,9 +25,19 @@ public interface ActivityService {
     ActivityRegistration registerForActivity(Long activityId, Long userId);
 
     /**
-     * 成员签到并发放签到奖励积分
+     * 成员签到（无 QR token）
      */
     ActivityRegistration checkIn(Long activityId, Long userId);
+
+    /**
+     * 成员签到（支持 QR token 验证）
+     */
+    ActivityRegistration checkIn(Long activityId, Long userId, String qrToken);
+
+    /**
+     * 生成活动签到二维码 token
+     */
+    String generateQrCode(Long activityId);
 
     /**
      * 归档活动（状态更新为 ARCHIVED）
@@ -61,5 +73,15 @@ public interface ActivityService {
      * 获取活动分组列表
      */
     List<ActivityGroup> getGroups(Long activityId);
+
+    /**
+     * 提交活动反馈
+     */
+    void submitFeedback(Long activityId, Long userId, FeedbackRequest request);
+
+    /**
+     * 获取活动反馈列表
+     */
+    List<ActivityFeedback> getFeedback(Long activityId);
 }
 

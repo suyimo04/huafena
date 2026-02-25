@@ -9,3 +9,4 @@ backend\target\generated-sources
 backend\target\maven-status
 backend\target\test-classes
 backend\src\test
+.gitignore

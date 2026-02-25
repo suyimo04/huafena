@@ -1,12 +1,15 @@
 package com.pollen.management.service;
 
+import com.pollen.management.dto.FeedbackRequest;
 import com.pollen.management.entity.Activity;
+import com.pollen.management.entity.ActivityFeedback;
 import com.pollen.management.entity.ActivityGroup;
 import com.pollen.management.entity.ActivityRegistration;
 import com.pollen.management.entity.enums.ActivityStatus;
 import com.pollen.management.entity.enums.ApprovalMode;
 import com.pollen.management.entity.enums.PointsType;
 import com.pollen.management.entity.enums.RegistrationStatus;
+import com.pollen.management.repository.ActivityFeedbackRepository;
 import com.pollen.management.repository.ActivityGroupRepository;
 import com.pollen.management.repository.ActivityRegistrationRepository;
 import com.pollen.management.repository.ActivityRepository;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ActivityRepository activityRepository;
     private final ActivityRegistrationRepository registrationRepository;
     private final ActivityGroupRepository activityGroupRepository;
+    private final ActivityFeedbackRepository activityFeedbackRepository;
     private final PointsService pointsService;
     private final ObjectMapper objectMapper;
 
@@ -82,8 +87,20 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional
     public ActivityRegistration checkIn(Long activityId, Long userId) {
-        activityRepository.findById(activityId)
+        return checkIn(activityId, userId, null);
+    }
+
+    @Override
+    @Transactional
+    public ActivityRegistration checkIn(Long activityId, Long userId, String qrToken) {
+        Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new BusinessException(404, "活动不存在"));
+
+        if (qrToken != null && !qrToken.isEmpty()) {
+            if (activity.getQrToken() == null || !activity.getQrToken().equals(qrToken)) {
+                throw new BusinessException(400, "二维码无效或已过期");
+            }
+        }
 
         ActivityRegistration registration = registrationRepository.findByActivityIdAndUserId(activityId, userId)
                 .orElseThrow(() -> new BusinessException(403, "未报名该活动，无法签到"));
@@ -205,5 +222,45 @@ public class ActivityServiceImpl implements ActivityService {
                 .orElseThrow(() -> new BusinessException(404, "活动不存在"));
 
         return activityGroupRepository.findByActivityId(activityId);
+    }
+
+    @Override
+    @Transactional
+    public String generateQrCode(Long activityId) {
+        Activity activity = activityRepository.findById(activityId)
+                .orElseThrow(() -> new BusinessException(404, "活动不存在"));
+
+        String token = UUID.randomUUID().toString();
+        activity.setQrToken(token);
+        activityRepository.save(activity);
+
+        return token;
+    }
+
+    @Override
+    @Transactional
+    public void submitFeedback(Long activityId, Long userId, FeedbackRequest request) {
+        activityRepository.findById(activityId)
+                .orElseThrow(() -> new BusinessException(404, "活动不存在"));
+
+        if (activityFeedbackRepository.existsByActivityIdAndUserId(activityId, userId)) {
+            throw new BusinessException(409, "已提交过反馈，不可重复提交");
+        }
+
+        ActivityFeedback feedback = ActivityFeedback.builder()
+                .activityId(activityId)
+                .userId(userId)
+                .rating(request.getRating())
+                .comment(request.getComment())
+                .build();
+        activityFeedbackRepository.save(feedback);
+    }
+
+    @Override
+    public List<ActivityFeedback> getFeedback(Long activityId) {
+        activityRepository.findById(activityId)
+                .orElseThrow(() -> new BusinessException(404, "活动不存在"));
+
+        return activityFeedbackRepository.findByActivityId(activityId);
     }
 }

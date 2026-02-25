@@ -54,6 +54,9 @@ public class Activity {
     @Builder.Default
     private ActivityStatus status = ActivityStatus.UPCOMING;
 
+    @Column(length = 64)
+    private String qrToken;
+
     @Column(nullable = false)
     private Long createdBy;
 

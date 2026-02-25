@@ -31,6 +31,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\Batch
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\BatchSaveResponse.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateActivityRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateApplicationRequest.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateGroupRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateInternshipTaskRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateTemplateRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\DashboardStatsDTO.java
@@ -57,6 +58,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SendE
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\StartInterviewRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SubmitResponseRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\UpdateEmailConfigRequest.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\UpdateGroupMembersRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\UpdateTemplateRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\Activity.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\ActivityFeedback.java
