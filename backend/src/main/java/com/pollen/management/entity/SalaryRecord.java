@@ -48,6 +48,52 @@ public class SalaryRecord {
     @Builder.Default
     private BigDecimal salaryAmount = BigDecimal.ZERO;
 
+    // 基础职责维度明细
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer communityActivityPoints = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer checkinCount = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer checkinPoints = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer violationHandlingCount = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer violationHandlingPoints = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer taskCompletionPoints = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer announcementCount = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer announcementPoints = 0;
+
+    // 卓越贡献维度明细
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer eventHostingPoints = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer birthdayBonusPoints = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer monthlyExcellentPoints = 0;
+
     private String remark;
 
     @Version

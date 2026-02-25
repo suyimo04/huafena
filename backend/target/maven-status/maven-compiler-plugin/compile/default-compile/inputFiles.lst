@@ -21,6 +21,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controlle
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\QuestionnaireResponseController.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\QuestionnaireTemplateController.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\ReportController.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\SalaryConfigController.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\SalaryController.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\UserManagementController.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\AddPointsRequest.java
@@ -33,6 +34,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\Award
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\BatchOperationRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\BatchSaveRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\BatchSaveResponse.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CheckinTier.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateActivityRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateApplicationRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateGroupRequest.java
@@ -64,6 +66,10 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\Publi
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\RecruitmentStatsDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\RegisterRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\RoleChangeRecord.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\RotationThresholds.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryCalculationResult.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryDimensionInput.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryMemberDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryReportDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryStatsDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\ScreeningResult.java
@@ -120,6 +126,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\Qu
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\QuestionnaireTemplate.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\QuestionnaireVersion.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\RoleChangeHistory.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\SalaryConfig.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\SalaryRecord.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\User.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\entity\UserActivityLog.java
@@ -151,6 +158,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repositor
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\QuestionnaireTemplateRepository.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\QuestionnaireVersionRepository.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\RoleChangeHistoryRepository.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\SalaryConfigRepository.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\SalaryRecordRepository.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\UserActivityLogRepository.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\repository\UserRepository.java
@@ -207,6 +215,8 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\Q
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\QuestionnaireTemplateServiceImpl.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\ReportService.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\ReportServiceImpl.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\SalaryConfigService.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\SalaryConfigServiceImpl.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\SalaryService.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\service\SalaryServiceImpl.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\util\AesEncryptionUtil.java
