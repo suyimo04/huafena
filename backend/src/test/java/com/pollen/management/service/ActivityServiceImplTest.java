@@ -1,0 +1,265 @@
+package com.pollen.management.service;
+
+import com.pollen.management.entity.Activity;
+import com.pollen.management.entity.ActivityRegistration;
+import com.pollen.management.entity.enums.ActivityStatus;
+import com.pollen.management.entity.enums.PointsType;
+import com.pollen.management.repository.ActivityRegistrationRepository;
+import com.pollen.management.repository.ActivityRepository;
+import com.pollen.management.util.BusinessException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class ActivityServiceImplTest {
+
+    @Mock
+    private ActivityRepository activityRepository;
+
+    @Mock
+    private ActivityRegistrationRepository registrationRepository;
+
+    @Mock
+    private PointsService pointsService;
+
+    @InjectMocks
+    private ActivityServiceImpl activityService;
+
+    // --- createActivity tests ---
+
+    @Test
+    void createActivity_shouldCreateWithCorrectFields() {
+        LocalDateTime eventTime = LocalDateTime.of(2025, 8, 1, 14, 0);
+        when(activityRepository.save(any(Activity.class))).thenAnswer(inv -> {
+            Activity a = inv.getArgument(0);
+            a.setId(1L);
+            return a;
+        });
+
+        Activity result = activityService.createActivity("团建活动", "年度团建", eventTime, "公园", 10L);
+
+        assertEquals("团建活动", result.getName());
+        assertEquals("年度团建", result.getDescription());
+        assertEquals(eventTime, result.getActivityTime());
+        assertEquals("公园", result.getLocation());
+        assertEquals(10L, result.getCreatedBy());
+        assertEquals(ActivityStatus.UPCOMING, result.getStatus());
+        assertEquals(0, result.getRegistrationCount());
+    }
+
+    // --- registerForActivity tests ---
+
+    @Test
+    void registerForActivity_shouldRecordRegistrationAndUpdateCount() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.UPCOMING).registrationCount(0).build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+        when(registrationRepository.existsByActivityIdAndUserId(1L, 2L)).thenReturn(false);
+        when(registrationRepository.save(any(ActivityRegistration.class))).thenAnswer(inv -> {
+            ActivityRegistration r = inv.getArgument(0);
+            r.setId(1L);
+            return r;
+        });
+        when(activityRepository.save(any(Activity.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ActivityRegistration result = activityService.registerForActivity(1L, 2L);
+
+        assertEquals(1L, result.getActivityId());
+        assertEquals(2L, result.getUserId());
+        assertFalse(result.getCheckedIn());
+        assertEquals(1, activity.getRegistrationCount());
+    }
+
+    @Test
+    void registerForActivity_shouldRejectDuplicateRegistration() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.UPCOMING).registrationCount(1).build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+        when(registrationRepository.existsByActivityIdAndUserId(1L, 2L)).thenReturn(true);
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.registerForActivity(1L, 2L));
+        assertEquals(409, ex.getCode());
+        assertTrue(ex.getMessage().contains("重复报名"));
+    }
+
+    @Test
+    void registerForActivity_shouldRejectForArchivedActivity() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.ARCHIVED).registrationCount(0).build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.registerForActivity(1L, 2L));
+        assertEquals(400, ex.getCode());
+        assertTrue(ex.getMessage().contains("归档"));
+    }
+
+    @Test
+    void registerForActivity_shouldRejectForNonExistentActivity() {
+        when(activityRepository.findById(99L)).thenReturn(Optional.empty());
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.registerForActivity(99L, 2L));
+        assertEquals(404, ex.getCode());
+    }
+
+    // --- checkIn tests ---
+
+    @Test
+    void checkIn_shouldRecordTimeAndAwardPoints() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.ONGOING).build();
+        ActivityRegistration reg = ActivityRegistration.builder()
+                .id(1L).activityId(1L).userId(2L).checkedIn(false).build();
+
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+        when(registrationRepository.findByActivityIdAndUserId(1L, 2L)).thenReturn(Optional.of(reg));
+        when(registrationRepository.save(any(ActivityRegistration.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ActivityRegistration result = activityService.checkIn(1L, 2L);
+
+        assertTrue(result.getCheckedIn());
+        assertNotNull(result.getCheckedInAt());
+        verify(pointsService).addPoints(2L, PointsType.CHECKIN, 5, "活动签到奖励");
+    }
+
+    @Test
+    void checkIn_shouldRejectUnregisteredMember() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.ONGOING).build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+        when(registrationRepository.findByActivityIdAndUserId(1L, 3L)).thenReturn(Optional.empty());
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.checkIn(1L, 3L));
+        assertEquals(403, ex.getCode());
+        assertTrue(ex.getMessage().contains("未报名"));
+    }
+
+    @Test
+    void checkIn_shouldRejectDuplicateCheckIn() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.ONGOING).build();
+        ActivityRegistration reg = ActivityRegistration.builder()
+                .id(1L).activityId(1L).userId(2L).checkedIn(true).checkedInAt(LocalDateTime.now()).build();
+
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+        when(registrationRepository.findByActivityIdAndUserId(1L, 2L)).thenReturn(Optional.of(reg));
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.checkIn(1L, 2L));
+        assertEquals(400, ex.getCode());
+        assertTrue(ex.getMessage().contains("已签到"));
+    }
+
+    @Test
+    void checkIn_shouldRejectForNonExistentActivity() {
+        when(activityRepository.findById(99L)).thenReturn(Optional.empty());
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.checkIn(99L, 2L));
+        assertEquals(404, ex.getCode());
+    }
+
+    // --- archiveActivity tests ---
+
+    @Test
+    void archiveActivity_shouldSetStatusToArchived() {
+        Activity activity = Activity.builder().id(1L).name("活动").status(ActivityStatus.UPCOMING).build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+        when(activityRepository.save(any(Activity.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Activity result = activityService.archiveActivity(1L);
+
+        assertEquals(ActivityStatus.ARCHIVED, result.getStatus());
+    }
+
+    @Test
+    void archiveActivity_shouldRejectForNonExistentActivity() {
+        when(activityRepository.findById(99L)).thenReturn(Optional.empty());
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.archiveActivity(99L));
+        assertEquals(404, ex.getCode());
+    }
+
+    // --- listActivities tests ---
+
+    @Test
+    void listActivities_shouldReturnAllActivities() {
+        Activity a1 = Activity.builder().id(1L).name("活动1").build();
+        Activity a2 = Activity.builder().id(2L).name("活动2").build();
+        when(activityRepository.findAll()).thenReturn(List.of(a1, a2));
+
+        List<Activity> result = activityService.listActivities();
+
+        assertEquals(2, result.size());
+    }
+
+    // --- awardActivityPoints tests ---
+
+    @Test
+    void awardActivityPoints_shouldAwardValidScore() {
+        Activity activity = Activity.builder().id(1L).name("活动").build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+
+        activityService.awardActivityPoints(1L, 2L, 15);
+
+        verify(pointsService).addPoints(2L, PointsType.EVENT_HOSTING, 15, "举办活动积分奖励");
+    }
+
+    @Test
+    void awardActivityPoints_shouldAwardMinScore() {
+        Activity activity = Activity.builder().id(1L).name("活动").build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+
+        activityService.awardActivityPoints(1L, 2L, 5);
+
+        verify(pointsService).addPoints(2L, PointsType.EVENT_HOSTING, 5, "举办活动积分奖励");
+    }
+
+    @Test
+    void awardActivityPoints_shouldAwardMaxScore() {
+        Activity activity = Activity.builder().id(1L).name("活动").build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+
+        activityService.awardActivityPoints(1L, 2L, 25);
+
+        verify(pointsService).addPoints(2L, PointsType.EVENT_HOSTING, 25, "举办活动积分奖励");
+    }
+
+    @Test
+    void awardActivityPoints_shouldRejectScoreBelowRange() {
+        Activity activity = Activity.builder().id(1L).name("活动").build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.awardActivityPoints(1L, 2L, 4));
+        assertEquals(400, ex.getCode());
+    }
+
+    @Test
+    void awardActivityPoints_shouldRejectScoreAboveRange() {
+        Activity activity = Activity.builder().id(1L).name("活动").build();
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(activity));
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.awardActivityPoints(1L, 2L, 26));
+        assertEquals(400, ex.getCode());
+    }
+
+    @Test
+    void awardActivityPoints_shouldRejectForNonExistentActivity() {
+        when(activityRepository.findById(99L)).thenReturn(Optional.empty());
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> activityService.awardActivityPoints(99L, 2L, 10));
+        assertEquals(404, ex.getCode());
+    }
+}

@@ -7,6 +7,7 @@ import com.pollen.management.entity.enums.ApplicationStatus;
 import com.pollen.management.entity.enums.Role;
 import com.pollen.management.repository.ApplicationRepository;
 import com.pollen.management.repository.UserRepository;
+import com.pollen.management.security.JwtUtil;
 import net.jqwik.api.*;
 import net.jqwik.api.constraints.*;
 import org.mockito.ArgumentCaptor;
@@ -37,6 +38,7 @@ class NewUserInvariantProperties {
         UserRepository userRepository = mock(UserRepository.class);
         ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
         PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+        JwtUtil jwtUtil = mock(JwtUtil.class);
 
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$encodedHash");
@@ -47,7 +49,7 @@ class NewUserInvariantProperties {
         });
         when(applicationRepository.save(any(Application.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AuthServiceImpl authService = new AuthServiceImpl(userRepository, applicationRepository, passwordEncoder);
+        AuthServiceImpl authService = new AuthServiceImpl(userRepository, applicationRepository, passwordEncoder, jwtUtil);
         RegisterRequest request = new RegisterRequest(username, password, Map.of("q1", "a1"));
 
         // Act
@@ -71,6 +73,7 @@ class NewUserInvariantProperties {
         UserRepository userRepository = mock(UserRepository.class);
         ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
         PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+        JwtUtil jwtUtil = mock(JwtUtil.class);
 
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$encodedHash");
@@ -81,7 +84,7 @@ class NewUserInvariantProperties {
         });
         when(applicationRepository.save(any(Application.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AuthServiceImpl authService = new AuthServiceImpl(userRepository, applicationRepository, passwordEncoder);
+        AuthServiceImpl authService = new AuthServiceImpl(userRepository, applicationRepository, passwordEncoder, jwtUtil);
         RegisterRequest request = new RegisterRequest(username, password, Map.of("q1", "a1"));
 
         // Act

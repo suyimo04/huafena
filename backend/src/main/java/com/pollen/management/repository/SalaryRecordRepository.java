@@ -9,4 +9,7 @@ import java.util.List;
 @Repository
 public interface SalaryRecordRepository extends JpaRepository<SalaryRecord, Long> {
     List<SalaryRecord> findByUserId(Long userId);
+    List<SalaryRecord> findByArchivedFalse();
+    List<SalaryRecord> findByUserIdAndArchivedTrueOrderByArchivedAtDesc(Long userId);
+    List<SalaryRecord> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

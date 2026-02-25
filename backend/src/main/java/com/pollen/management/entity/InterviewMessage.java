@@ -28,6 +28,9 @@ public class InterviewMessage {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
+    @Builder.Default
+    private Integer timeLimitSeconds = 60;
+
     @PrePersist
     protected void onCreate() {
         if (timestamp == null) {

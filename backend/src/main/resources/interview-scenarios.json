@@ -1,0 +1,122 @@
+[
+  {
+    "id": "conflict-resolution-1",
+    "name": "群内成员争执调解",
+    "description": "两名群成员因观点不同在群内发生激烈争吵，你需要作为管理员介入调解，平息冲突并维护群内和谐氛围。",
+    "difficulty": 1,
+    "category": "冲突处理",
+    "isStudentOnly": false,
+    "aiRole": "争吵的群成员",
+    "initialPrompt": "你好，我是群成员小明。刚才在群里和另一个人吵起来了，他说的话太过分了，我觉得管理员应该把他踢出去！"
+  },
+  {
+    "id": "conflict-resolution-2",
+    "name": "新老成员矛盾处理",
+    "description": "老成员对新成员的发言方式不满，在群内公开批评，导致新成员感到委屈。你需要妥善处理双方情绪。",
+    "difficulty": 2,
+    "category": "冲突处理",
+    "isStudentOnly": false,
+    "aiRole": "不满的老成员",
+    "initialPrompt": "管理员你好，我在这个群三年了，这个新来的天天发一些没营养的内容刷屏，我说了他两句他还不服气，你们管不管？"
+  },
+  {
+    "id": "conflict-resolution-3",
+    "name": "多方利益冲突协调",
+    "description": "群内活动组织过程中，多名成员对活动方案产生严重分歧，情绪激动，你需要协调各方意见并推动达成共识。",
+    "difficulty": 3,
+    "category": "冲突处理",
+    "isStudentOnly": false,
+    "aiRole": "情绪激动的活动参与者",
+    "initialPrompt": "这个活动方案根本不合理！我们好几个人都反对，但组织者完全不听我们的意见。如果不改方案我们就退出，而且要在群里公开说明原因！"
+  },
+  {
+    "id": "violation-judgment-1",
+    "name": "轻微违规行为判断",
+    "description": "群成员发送了疑似广告内容，你需要根据群规判断是否构成违规，并做出合理处理。",
+    "difficulty": 1,
+    "category": "违规判断",
+    "isStudentOnly": false,
+    "aiRole": "发送疑似广告的群成员",
+    "initialPrompt": "管理员你好，我刚才分享了一个我觉得很好用的产品链接，怎么被警告了？我只是想推荐给大家，又不是打广告。"
+  },
+  {
+    "id": "violation-judgment-2",
+    "name": "边界违规行为裁定",
+    "description": "群成员的发言内容处于违规边界，既可能是正常讨论也可能涉及敏感话题，你需要准确判断并给出处理意见。",
+    "difficulty": 2,
+    "category": "违规判断",
+    "isStudentOnly": false,
+    "aiRole": "发言处于违规边界的群成员",
+    "initialPrompt": "我就是在讨论一个社会热点话题而已，怎么就不行了？群规里又没有明确说不能讨论这类话题，你们是不是管得太宽了？"
+  },
+  {
+    "id": "violation-judgment-3",
+    "name": "恶意违规与申诉处理",
+    "description": "群成员多次违规后被处罚，但坚持申诉称自己被冤枉，态度强硬。你需要根据证据和群规做出公正裁定。",
+    "difficulty": 3,
+    "category": "违规判断",
+    "isStudentOnly": false,
+    "aiRole": "多次违规并强硬申诉的群成员",
+    "initialPrompt": "我要申诉！你们给我的三次警告都是不合理的，我每次都是正常发言，是其他人举报我。你们偏听偏信，我要求撤销所有处罚，否则我要向上级投诉！"
+  },
+  {
+    "id": "complaint-handling-1",
+    "name": "基础投诉受理",
+    "description": "用户对群内服务不满意，提出投诉。你需要耐心倾听、安抚情绪并给出解决方案。",
+    "difficulty": 1,
+    "category": "用户投诉处理",
+    "isStudentOnly": false,
+    "aiRole": "不满意的用户",
+    "initialPrompt": "你好，我想投诉一下。我在群里提了一个问题，等了两天都没人回复我，这个群的服务态度也太差了吧？"
+  },
+  {
+    "id": "complaint-handling-2",
+    "name": "复杂投诉协调",
+    "description": "用户投诉涉及多个管理员的处理不当，情况复杂。你需要全面了解情况并协调解决。",
+    "difficulty": 2,
+    "category": "用户投诉处理",
+    "isStudentOnly": false,
+    "aiRole": "投诉多个管理员的用户",
+    "initialPrompt": "我要投诉你们的管理团队！上次A管理员说可以发活动链接，结果B管理员把我禁言了，我找C管理员申诉他说不归他管。你们内部到底有没有统一标准？"
+  },
+  {
+    "id": "complaint-handling-3",
+    "name": "极端投诉与危机处理",
+    "description": "用户情绪极度激动，威胁要在社交媒体上曝光并带动其他成员集体退群。你需要冷静应对并化解危机。",
+    "difficulty": 3,
+    "category": "用户投诉处理",
+    "isStudentOnly": false,
+    "aiRole": "情绪极度激动的用户",
+    "initialPrompt": "我受够了！我已经截图了所有证据，准备发到微博上让大家看看你们是怎么对待群成员的。而且已经有十几个人说要跟我一起退群，你们自己看着办！"
+  },
+  {
+    "id": "study-work-balance-1",
+    "name": "考试期间工作安排",
+    "description": "学生成员面临期末考试，需要协调学业和群管理工作的时间分配。",
+    "difficulty": 1,
+    "category": "学业与工作平衡",
+    "isStudentOnly": true,
+    "aiRole": "关心学业的群组长",
+    "initialPrompt": "我看你最近期末考试快到了，群里的值班安排需要调整一下。你觉得考试期间你能保证每天在线多长时间？"
+  },
+  {
+    "id": "study-work-balance-2",
+    "name": "学业压力下的责任担当",
+    "description": "学生成员因学业压力想要暂时放弃群管理职责，你需要帮助其找到平衡点。",
+    "difficulty": 2,
+    "category": "学业与工作平衡",
+    "isStudentOnly": true,
+    "aiRole": "学业压力大的群成员",
+    "initialPrompt": "管理员你好，我最近课程压力特别大，论文和考试都赶在一起了。我想暂时退出管理工作，等这学期结束再回来可以吗？"
+  },
+  {
+    "id": "study-work-balance-3",
+    "name": "长期学业与工作规划",
+    "description": "学生成员需要制定长期的学业与群管理工作平衡计划，涉及实习、毕业等重要节点。",
+    "difficulty": 3,
+    "category": "学业与工作平衡",
+    "isStudentOnly": true,
+    "aiRole": "面临毕业抉择的学生成员",
+    "initialPrompt": "我下学期要开始毕业实习了，时间会非常紧张。但我又不想完全放弃群里的工作，毕竟做了这么久有感情了。你觉得我应该怎么规划接下来半年的安排？"
+  }
+]

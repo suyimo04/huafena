@@ -28,6 +28,8 @@ public class Interview {
     @Builder.Default
     private InterviewStatus status = InterviewStatus.NOT_STARTED;
 
+    private String scenarioId;
+
     private String difficultyLevel;
 
     @Column(updatable = false)

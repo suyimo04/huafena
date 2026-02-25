@@ -49,6 +49,12 @@ public class SalaryRecord {
     @Version
     private Integer version;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean archived = false;
+
+    private LocalDateTime archivedAt;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 

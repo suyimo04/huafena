@@ -41,6 +41,12 @@ public class InterviewReport {
 
     private String suggestedMentor;
 
+    private String recommendationLabel;
+
+    private Boolean manualApproved;
+
+    private LocalDateTime reviewedAt;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 

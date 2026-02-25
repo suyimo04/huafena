@@ -1,0 +1,1 @@
+import{i as e}from"./axios-DYop8cuN.js";function u(){return e.get("/questionnaire/templates")}function s(t){return e.get(`/public/questionnaire/${t}`)}function r(t,i){return e.post(`/public/questionnaire/${t}/submit`,{answers:i})}export{u as a,s as g,r as s};

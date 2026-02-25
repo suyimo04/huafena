@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/pollen_management?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true
     username: root
-    password: root
+    password: suyimo.04
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

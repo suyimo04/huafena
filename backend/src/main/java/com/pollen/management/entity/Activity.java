@@ -1,6 +1,8 @@
 package com.pollen.management.entity;
 
 import com.pollen.management.entity.enums.ActivityStatus;
+import com.pollen.management.entity.enums.ActivityType;
+import com.pollen.management.entity.enums.ApprovalMode;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -22,6 +24,21 @@ public class Activity {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(length = 500)
+    private String coverImageUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ActivityType activityType;
+
+    @Column(columnDefinition = "JSON")
+    private String customFormFields;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    @Builder.Default
+    private ApprovalMode approvalMode = ApprovalMode.AUTO;
 
     @Column(nullable = false)
     private LocalDateTime activityTime;

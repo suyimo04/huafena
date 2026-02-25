@@ -31,6 +31,10 @@ public class User {
     @Builder.Default
     private Boolean enabled = false;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean pendingDismissal = false;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 

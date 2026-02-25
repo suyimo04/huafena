@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findAllByOrderByCreatedAtDesc();
+    List<Application> findByStatusOrderByCreatedAtDesc(ApplicationStatus status);
     List<Application> findByUserId(Long userId);
     boolean existsByUserIdAndStatusIn(Long userId, List<ApplicationStatus> statuses);
 }
