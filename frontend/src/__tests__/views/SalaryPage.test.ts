@@ -8,7 +8,10 @@ vi.mock('@/api/salary', () => ({
   getSalaryMembers: vi.fn(),
   batchSaveSalary: vi.fn(),
   calculateSalaries: vi.fn(),
+  calculateAndDistribute: vi.fn(),
   archiveSalary: vi.fn(),
+  getSalaryPeriods: vi.fn().mockResolvedValue({ data: [] }),
+  createSalaryPeriod: vi.fn(),
 }))
 
 vi.mock('@/api/salaryConfig', () => ({
@@ -190,10 +193,10 @@ describe('SalaryPage', () => {
     expect(vm.violatingIds.has(10)).toBe(true)
   })
 
-  it('should call calculateSalaries on calculate', async () => {
+  it('should call calculateAndDistribute on calculate', async () => {
     const api = await import('@/api/salary')
     ;(api.getSalaryMembers as ReturnType<typeof vi.fn>).mockResolvedValue({ data: mockMembers })
-    ;(api.calculateSalaries as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ data: [] })
+    ;(api.calculateAndDistribute as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ data: [] })
 
     const wrapper = createWrapper()
     await flushPromises()
@@ -202,7 +205,7 @@ describe('SalaryPage', () => {
     await vm.handleCalculate()
     await flushPromises()
 
-    expect(api.calculateSalaries).toHaveBeenCalled()
+    expect(api.calculateAndDistribute).toHaveBeenCalled()
   })
 
   it('getDisplayValue returns edited value when row is edited', async () => {

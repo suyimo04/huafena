@@ -48,7 +48,7 @@ class SalaryReportCompletenessPropertyTest {
         UserRepository userRepository = mock(UserRepository.class);
         SalaryConfigService salaryConfigService = mock(SalaryConfigService.class);
 
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(records);
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(poolTotal);
 
         // Mock user lookup for each record
@@ -70,7 +70,7 @@ class SalaryReportCompletenessPropertyTest {
                 salaryConfigService
         );
 
-        SalaryReportDTO report = service.generateSalaryReport();
+        SalaryReportDTO report = service.generateSalaryReport("2025-07");
 
         // Verify: report contains all members
         assertThat(report.getDetails()).hasSize(records.size());
@@ -118,7 +118,7 @@ class SalaryReportCompletenessPropertyTest {
         UserRepository userRepository = mock(UserRepository.class);
         SalaryConfigService salaryConfigService = mock(SalaryConfigService.class);
 
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(records);
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(poolTotal);
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -130,7 +130,7 @@ class SalaryReportCompletenessPropertyTest {
                 salaryConfigService
         );
 
-        SalaryReportDTO report = service.generateSalaryReport();
+        SalaryReportDTO report = service.generateSalaryReport("2025-07");
 
         int expectedAllocatedTotal = records.stream()
                 .mapToInt(SalaryRecord::getMiniCoins)
@@ -151,7 +151,7 @@ class SalaryReportCompletenessPropertyTest {
         UserRepository userRepository = mock(UserRepository.class);
         SalaryConfigService salaryConfigService = mock(SalaryConfigService.class);
 
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(records);
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(poolTotal);
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -163,7 +163,7 @@ class SalaryReportCompletenessPropertyTest {
                 salaryConfigService
         );
 
-        SalaryReportDTO report = service.generateSalaryReport();
+        SalaryReportDTO report = service.generateSalaryReport("2025-07");
 
         // Requirement 7.3: allocatedTotal + remainingAmount == salaryPoolTotal
         assertThat(report.getAllocatedTotal() + report.getRemainingAmount())
@@ -229,6 +229,7 @@ class SalaryReportCompletenessPropertyTest {
                         .miniCoins(bonus[6])
                         .deductions(0)
                         .salaryAmount(BigDecimal.valueOf(bonus[6]))
+                        .period("2025-07")
                         .archived(false)
                         .build()
         );

@@ -4,6 +4,8 @@ import com.pollen.management.dto.BatchSaveResponse;
 import com.pollen.management.dto.SalaryCalculationResult;
 import com.pollen.management.dto.SalaryDimensionInput;
 import com.pollen.management.dto.SalaryMemberDTO;
+import com.pollen.management.dto.SalaryPeriodDTO;
+import com.pollen.management.dto.SalaryPoolSummaryDTO;
 import com.pollen.management.dto.SalaryReportDTO;
 import com.pollen.management.entity.SalaryRecord;
 
@@ -25,11 +27,34 @@ public interface SalaryService {
      * 获取当前薪资记录列表
      */
     List<SalaryRecord> getSalaryList();
+
     /**
-     * 获取薪资管理页面成员列表（按角色分组：LEADER, VICE_LEADER, INTERN）
+     * 获取指定周期的薪资成员列表（按角色分组：LEADER, VICE_LEADER, INTERN）
      * 包含用户名、角色信息，以及已有的薪资记录数据
+     *
+     * @param period 薪酬周期标识，格式 "YYYY-MM"
      */
-    List<SalaryMemberDTO> getSalaryMembers();
+    List<SalaryMemberDTO> getSalaryMembers(String period);
+
+    /**
+     * 创建新的薪酬周期，为所有正式成员初始化空白记录
+     *
+     * @param period 薪酬周期标识，格式 "YYYY-MM"
+     * @return 初始化的薪资记录列表
+     */
+    List<SalaryRecord> createPeriod(String period);
+
+    /**
+     * 获取所有薪酬周期列表（含状态信息），按周期降序排列
+     */
+    List<SalaryPeriodDTO> getPeriodList();
+
+    /**
+     * 获取最新的未归档周期标识
+     *
+     * @return 最新未归档周期，如无则返回 null
+     */
+    String getLatestActivePeriod();
 
     /**
      * 更新单条薪资记录（单元格编辑）
@@ -42,25 +67,27 @@ public interface SalaryService {
     List<SalaryRecord> batchSave(List<SalaryRecord> records);
 
     /**
-     * 批量保存薪资记录（增强版）
+     * 批量保存薪资记录（增强版，按周期隔离）
      * 返回结构化验证结果，包含每条违规记录的用户 ID 和错误详情
      * 验证通过时保存所有修改、生成操作日志
      * 使用乐观锁（version 字段）防止并发冲突
      *
      * @param records    待保存的薪资记录
      * @param operatorId 操作人 ID（用于审计日志）
+     * @param period     薪酬周期标识，格式 "YYYY-MM"
      * @return 批量保存响应，包含成功/失败状态和详细错误信息
      */
-    BatchSaveResponse batchSaveWithValidation(List<SalaryRecord> records, Long operatorId);
+    BatchSaveResponse batchSaveWithValidation(List<SalaryRecord> records, Long operatorId, String period);
 
     /**
-     * 执行薪酬池分配：整合维度计算 + 薪酬池分配
-     * 对所有正式成员基于已保存的维度明细数据执行计算引擎，
+     * 按周期执行薪酬池分配：整合维度计算 + 薪酬池分配
+     * 对指定周期的正式成员基于已保存的维度明细数据执行计算引擎，
      * 然后执行薪酬池分配（含等比例缩减和范围裁剪调剂）
      *
+     * @param period 薪酬周期标识，格式 "YYYY-MM"
      * @return 分配后的薪资记录列表
      */
-    List<SalaryRecord> calculateAndDistribute();
+    List<SalaryRecord> calculateAndDistribute(String period);
 
     /**
      * 基于维度明细计算单个成员的积分汇总
@@ -76,17 +103,27 @@ public interface SalaryService {
     SalaryCalculationResult calculateMemberPoints(SalaryDimensionInput input);
 
     /**
-     * 生成薪酬明细表：每人详细收入和积分构成
-     * 基于当前未归档的薪资记录生成报告
+     * 按周期生成薪酬明细表：每人详细收入和积分构成
+     *
+     * @param period 薪酬周期标识，格式 "YYYY-MM"
      */
-    SalaryReportDTO generateSalaryReport();
+    SalaryReportDTO generateSalaryReport(String period);
 
     /**
-     * 归档当前薪资记录
-     * 将所有未归档记录标记为 archived=true，设置 archivedAt 时间
+     * 按周期归档薪资记录
+     * 将指定周期内所有未归档记录标记为 archived=true，设置 archivedAt 时间
      *
      * @param operatorId 操作人 ID（用于审计日志）
+     * @param period     薪酬周期标识，格式 "YYYY-MM"
      * @return 被归档的记录数量
      */
-    int archiveSalaryRecords(Long operatorId);
+    int archiveSalaryRecords(Long operatorId, String period);
+
+    /**
+     * 获取指定周期的薪酬池概览（总额、已分配、剩余）
+     *
+     * @param period 薪酬周期标识，格式 "YYYY-MM"
+     * @return 薪酬池概览数据
+     */
+    SalaryPoolSummaryDTO getPoolSummary(String period);
 }

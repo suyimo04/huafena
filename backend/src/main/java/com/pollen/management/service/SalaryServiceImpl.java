@@ -6,6 +6,8 @@ import com.pollen.management.dto.CheckinTier;
 import com.pollen.management.dto.SalaryCalculationResult;
 import com.pollen.management.dto.SalaryDimensionInput;
 import com.pollen.management.dto.SalaryMemberDTO;
+import com.pollen.management.dto.SalaryPeriodDTO;
+import com.pollen.management.dto.SalaryPoolSummaryDTO;
 import com.pollen.management.dto.SalaryReportDTO;
 import com.pollen.management.entity.AuditLog;
 import com.pollen.management.entity.SalaryRecord;
@@ -15,6 +17,8 @@ import com.pollen.management.repository.AuditLogRepository;
 import com.pollen.management.repository.SalaryRecordRepository;
 import com.pollen.management.repository.UserRepository;
 import com.pollen.management.util.BusinessException;
+import com.pollen.management.util.PeriodUtils;
+import com.pollen.management.util.PeriodUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -26,6 +30,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,15 +102,63 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     @Override
-    public List<SalaryMemberDTO> getSalaryMembers() {
+    @Transactional
+    public List<SalaryRecord> createPeriod(String period) {
+        // 1. 校验周期格式
+        if (!PeriodUtils.isValidPeriod(period)) {
+            throw new BusinessException(400, "周期格式不合法，必须为 YYYY-MM 格式");
+        }
+
+        // 2. 检查周期是否已存在
+        List<SalaryRecord> existing = salaryRecordRepository.findByPeriod(period);
+        if (!existing.isEmpty()) {
+            throw new BusinessException(409, "薪酬周期 " + period + " 已存在");
+        }
+
+        // 3. 获取薪资页面展示的所有成员（LEADER, VICE_LEADER, INTERN），为每人创建空白薪资记录
+        List<User> salaryMembers = userRepository.findByRoleIn(
+                List.of(Role.LEADER, Role.VICE_LEADER, Role.INTERN));
+        List<SalaryRecord> records = new ArrayList<>();
+        for (User member : salaryMembers) {
+            SalaryRecord record = SalaryRecord.builder()
+                    .userId(member.getId())
+                    .period(period)
+                    .build();
+            records.add(record);
+        }
+
+        return salaryRecordRepository.saveAll(records);
+    }
+
+
+    @Override
+    public List<SalaryPeriodDTO> getPeriodList() {
+        List<String> periods = salaryRecordRepository.findDistinctPeriods();
+        return periods.stream()
+                .map(period -> new SalaryPeriodDTO(
+                        period,
+                        salaryRecordRepository.existsByPeriodAndArchivedTrue(period),
+                        salaryRecordRepository.countByPeriod(period)))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public String getLatestActivePeriod() {
+        List<String> activePeriods = salaryRecordRepository.findDistinctActivePeriods();
+        return activePeriods.isEmpty() ? null : activePeriods.get(0);
+    }
+
+
+    @Override
+    public List<SalaryMemberDTO> getSalaryMembers(String period) {
         // 获取 LEADER, VICE_LEADER, INTERN 角色的成员
         List<User> members = userRepository.findByRoleIn(
                 List.of(Role.LEADER, Role.VICE_LEADER, Role.INTERN));
 
-        // 获取所有未归档的薪资记录，按 userId 索引
-        List<SalaryRecord> allRecords = salaryRecordRepository.findAll();
-        var recordMap = allRecords.stream()
-                .filter(r -> !r.getArchived())
+        // 按周期过滤薪资记录，按 userId 索引
+        List<SalaryRecord> periodRecords = salaryRecordRepository.findByPeriod(period);
+        var recordMap = periodRecords.stream()
                 .collect(Collectors.toMap(SalaryRecord::getUserId, r -> r, (a, b) -> b));
 
         // 按角色排序：LEADER → VICE_LEADER → INTERN
@@ -196,8 +249,9 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     @Override
-    public SalaryReportDTO generateSalaryReport() {
-        List<SalaryRecord> currentRecords = salaryRecordRepository.findByArchivedFalse();
+    public SalaryReportDTO generateSalaryReport(String period) {
+        // 获取指定周期的薪资记录
+        List<SalaryRecord> currentRecords = salaryRecordRepository.findByPeriod(period);
         if (currentRecords.isEmpty()) {
             throw new BusinessException(404, "当前没有未归档的薪资记录");
         }
@@ -255,8 +309,14 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     @Transactional
-    public int archiveSalaryRecords(Long operatorId) {
-        List<SalaryRecord> currentRecords = salaryRecordRepository.findByArchivedFalse();
+    public int archiveSalaryRecords(Long operatorId, String period) {
+        // 已归档周期检查
+        if (salaryRecordRepository.existsByPeriodAndArchivedTrue(period)) {
+            throw new BusinessException(400, "该周期已归档，不可修改");
+        }
+
+        // 获取指定周期的未归档记录
+        List<SalaryRecord> currentRecords = salaryRecordRepository.findByPeriodAndArchivedFalse(period);
         if (currentRecords.isEmpty()) {
             return 0;
         }
@@ -290,11 +350,13 @@ public class SalaryServiceImpl implements SalaryService {
 
         List<CheckinTier> tiers = salaryConfigService.getCheckinTiers();
         int pointsToCoinsRatio = salaryConfigService.getPointsToCoinsRatio();
+        int violationMultiplier = salaryConfigService.getViolationHandlingMultiplier();
+        int announcementMultiplier = salaryConfigService.getAnnouncementMultiplier();
 
         int checkinPoints = lookupCheckinTier(input.getCheckinCount(), tiers);
         String checkinLevel = lookupCheckinLevel(input.getCheckinCount(), tiers);
-        int violationHandlingPoints = input.getViolationHandlingCount() * 3;
-        int announcementPoints = input.getAnnouncementCount() * 5;
+        int violationHandlingPoints = input.getViolationHandlingCount() * violationMultiplier;
+        int announcementPoints = input.getAnnouncementCount() * announcementMultiplier;
 
         int basePoints = input.getCommunityActivityPoints()
                 + checkinPoints
@@ -323,15 +385,22 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     @Transactional
-    public List<SalaryRecord> calculateAndDistribute() {
-        // 获取所有未归档的薪资记录
-        List<SalaryRecord> currentRecords = salaryRecordRepository.findByArchivedFalse();
+    public List<SalaryRecord> calculateAndDistribute(String period) {
+        // 已归档周期检查
+        if (salaryRecordRepository.existsByPeriodAndArchivedTrue(period)) {
+            throw new BusinessException(400, "该周期已归档，不可修改");
+        }
+
+        // 获取指定周期的未归档薪资记录
+        List<SalaryRecord> currentRecords = salaryRecordRepository.findByPeriodAndArchivedFalse(period);
         if (currentRecords.isEmpty()) {
             throw new BusinessException(404, "当前没有未归档的薪资记录，请先录入数据");
         }
 
         List<CheckinTier> tiers = salaryConfigService.getCheckinTiers();
         int pointsToCoinsRatio = salaryConfigService.getPointsToCoinsRatio();
+        int violationMultiplier = salaryConfigService.getViolationHandlingMultiplier();
+        int announcementMultiplier = salaryConfigService.getAnnouncementMultiplier();
 
         // Step 1: 对每条记录基于维度明细重新计算积分
         List<Integer> rawMiniCoinsList = new ArrayList<>();
@@ -343,11 +412,11 @@ public class SalaryServiceImpl implements SalaryService {
             record.setCheckinPoints(checkinPoints);
 
             // 计算违规处理积分
-            int violationHandlingPoints = record.getViolationHandlingCount() * 3;
+            int violationHandlingPoints = record.getViolationHandlingCount() * violationMultiplier;
             record.setViolationHandlingPoints(violationHandlingPoints);
 
             // 计算公告积分
-            int announcementPoints = record.getAnnouncementCount() * 5;
+            int announcementPoints = record.getAnnouncementCount() * announcementMultiplier;
             record.setAnnouncementPoints(announcementPoints);
 
             // 基础积分汇总
@@ -583,7 +652,7 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     /**
-     * 批量保存验证
+     * 批量保存验证。薪酬池校验仅针对正式成员（VICE_LEADER + MEMBER）。
      */
     void validateBatch(List<SalaryRecord> records) {
         int requiredCount = salaryConfigService.getFormalMemberCount();
@@ -592,22 +661,31 @@ public class SalaryServiceImpl implements SalaryService {
         int maxCoins = range[1];
         int salaryPoolTotal = salaryConfigService.getSalaryPoolTotal();
 
+        // 筛选出正式成员的记录
+        Set<Long> formalMemberIds = getFormalMembers().stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
+        List<SalaryRecord> formalRecords = records.stream()
+                .filter(r -> formalMemberIds.contains(r.getUserId()))
+                .collect(Collectors.toList());
+
         // 验证正式成员数量
-        if (records.size() != requiredCount) {
+        if (formalRecords.size() != requiredCount) {
             throw new BusinessException(400,
-                    "正式成员数量不符，当前 " + records.size() + " 条记录，要求 " + requiredCount + " 条");
+                    "正式成员数量不符，当前 " + formalRecords.size() + " 条记录，要求 " + requiredCount + " 条");
         }
 
-        // 验证单人迷你币范围
-        for (SalaryRecord record : records) {
-            if (record.getMiniCoins() < minCoins || record.getMiniCoins() > maxCoins) {
-                throw new BusinessException(400,
-                        "成员(userId=" + record.getUserId() + ")迷你币 " + record.getMiniCoins() + " 不在 [" + minCoins + ", " + maxCoins + "] 范围内");
+        // 自动裁剪正式成员的迷你币到 [minCoins, maxCoins] 范围
+        for (SalaryRecord record : formalRecords) {
+            if (record.getMiniCoins() < minCoins) {
+                record.setMiniCoins(minCoins);
+            } else if (record.getMiniCoins() > maxCoins) {
+                record.setMiniCoins(maxCoins);
             }
         }
 
-        // 验证总额不超过薪酬池
-        int totalMiniCoins = records.stream().mapToInt(SalaryRecord::getMiniCoins).sum();
+        // 验证总额不超过薪酬池（仅正式成员）
+        int totalMiniCoins = formalRecords.stream().mapToInt(SalaryRecord::getMiniCoins).sum();
         if (totalMiniCoins > salaryPoolTotal) {
             throw new BusinessException(400,
                     "迷你币总额 " + totalMiniCoins + " 超过薪资池上限 " + salaryPoolTotal);
@@ -617,7 +695,12 @@ public class SalaryServiceImpl implements SalaryService {
     @Override
     @Transactional
     @CacheEvict(value = RedisConfig.CACHE_DASHBOARD, allEntries = true)
-    public BatchSaveResponse batchSaveWithValidation(List<SalaryRecord> records, Long operatorId) {
+    public BatchSaveResponse batchSaveWithValidation(List<SalaryRecord> records, Long operatorId, String period) {
+        // 已归档周期检查
+        if (salaryRecordRepository.existsByPeriodAndArchivedTrue(period)) {
+            throw new BusinessException(400, "该周期已归档，不可修改");
+        }
+
         // Step 1: 结构化验证
         BatchSaveResponse validationResult = validateBatchDetailed(records);
         if (!validationResult.isSuccess()) {
@@ -654,7 +737,8 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     /**
-     * 结构化批量验证，返回所有违规记录的详细错误信息
+     * 结构化批量验证，返回所有违规记录的详细错误信息。
+     * 薪酬池校验仅针对正式成员（VICE_LEADER + MEMBER），组长和实习组员不参与。
      */
     BatchSaveResponse validateBatchDetailed(List<SalaryRecord> records) {
         List<BatchSaveResponse.ValidationError> errors = new ArrayList<>();
@@ -665,28 +749,33 @@ public class SalaryServiceImpl implements SalaryService {
         int maxCoins = range[1];
         int salaryPoolTotal = salaryConfigService.getSalaryPoolTotal();
 
+        // 筛选出正式成员的记录（VICE_LEADER + MEMBER），用于薪酬池校验
+        Set<Long> formalMemberIds = getFormalMembers().stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
+        List<SalaryRecord> formalRecords = records.stream()
+                .filter(r -> formalMemberIds.contains(r.getUserId()))
+                .collect(Collectors.toList());
+
         // 验证正式成员数量
-        if (records.size() != requiredCount) {
+        if (formalRecords.size() != requiredCount) {
             return BatchSaveResponse.builder()
                     .success(false)
-                    .globalError("正式成员数量不符，当前 " + records.size() + " 条记录，要求 " + requiredCount + " 条")
+                    .globalError("正式成员数量不符，当前 " + formalRecords.size() + " 条记录，要求 " + requiredCount + " 条")
                     .build();
         }
 
-        // 验证单人迷你币范围
-        for (SalaryRecord record : records) {
-            if (record.getMiniCoins() < minCoins || record.getMiniCoins() > maxCoins) {
-                errors.add(BatchSaveResponse.ValidationError.builder()
-                        .userId(record.getUserId())
-                        .field("miniCoins")
-                        .message("迷你币 " + record.getMiniCoins() + " 不在 [" + minCoins + ", " + maxCoins + "] 范围内")
-                        .build());
-                violatingUserIds.add(record.getUserId());
+        // 自动裁剪正式成员的迷你币到 [minCoins, maxCoins] 范围
+        for (SalaryRecord record : formalRecords) {
+            if (record.getMiniCoins() < minCoins) {
+                record.setMiniCoins(minCoins);
+            } else if (record.getMiniCoins() > maxCoins) {
+                record.setMiniCoins(maxCoins);
             }
         }
 
-        // 验证总额不超过薪酬池
-        int totalMiniCoins = records.stream().mapToInt(SalaryRecord::getMiniCoins).sum();
+        // 验证总额不超过薪酬池（仅正式成员）
+        int totalMiniCoins = formalRecords.stream().mapToInt(SalaryRecord::getMiniCoins).sum();
         if (totalMiniCoins > salaryPoolTotal) {
             return BatchSaveResponse.builder()
                     .success(false)
@@ -705,5 +794,27 @@ public class SalaryServiceImpl implements SalaryService {
         }
 
         return BatchSaveResponse.builder().success(true).build();
+    }
+
+    @Override
+    public SalaryPoolSummaryDTO getPoolSummary(String period) {
+        int total = salaryConfigService.getSalaryPoolTotal();
+
+        // 只统计正式成员（VICE_LEADER + MEMBER）的 miniCoins
+        Set<Long> formalMemberIds = getFormalMembers().stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
+
+        List<SalaryRecord> records = salaryRecordRepository.findByPeriod(period);
+        int allocated = records.stream()
+                .filter(r -> formalMemberIds.contains(r.getUserId()))
+                .mapToInt(SalaryRecord::getMiniCoins)
+                .sum();
+
+        return SalaryPoolSummaryDTO.builder()
+                .total(total)
+                .allocated(allocated)
+                .remaining(total - allocated)
+                .build();
     }
 }

@@ -40,4 +40,10 @@ public interface SalaryConfigService {
 
     /** 获取流转阈值配置 */
     RotationThresholds getRotationThresholds();
+
+    /** 获取违规处理积分系数 */
+    int getViolationHandlingMultiplier();
+
+    /** 获取公告积分系数 */
+    int getAnnouncementMultiplier();
 }

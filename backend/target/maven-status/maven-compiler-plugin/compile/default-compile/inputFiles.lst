@@ -5,6 +5,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\config\Gl
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\config\package-info.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\config\RateLimitProperties.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\config\RedisConfig.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\config\SalaryPeriodMigration.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\config\SecurityConfig.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\ActivityController.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\controller\ApplicationController.java
@@ -39,6 +40,7 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\Creat
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateApplicationRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateGroupRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateInternshipTaskRequest.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreatePeriodRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\CreateTemplateRequest.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\DashboardStatsDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\DeductPointsRequest.java
@@ -70,6 +72,8 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\Rotat
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryCalculationResult.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryDimensionInput.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryMemberDTO.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryPeriodDTO.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryPoolSummaryDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryReportDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\SalaryStatsDTO.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\dto\ScreeningResult.java
@@ -225,3 +229,4 @@ E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\util\Encr
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\util\EncryptedIntegerConverter.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\util\EncryptedStringConverter.java
 E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\util\package-info.java
+E:\Desktop\Project\huafena\backend\src\main\java\com\pollen\management\util\PeriodUtils.java

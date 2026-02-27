@@ -41,7 +41,8 @@ class ArchiveOperationIntegrityPropertyTest {
         SalaryRecordRepository salaryRecordRepository = mock(SalaryRecordRepository.class);
         AuditLogRepository auditLogRepository = mock(AuditLogRepository.class);
 
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(records);
         // saveAll returns the same list (records are mutated in-place by the service)
         when(salaryRecordRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(auditLogRepository.save(org.mockito.ArgumentMatchers.any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -54,7 +55,7 @@ class ArchiveOperationIntegrityPropertyTest {
                 mock(SalaryConfigService.class)
         );
 
-        int archivedCount = service.archiveSalaryRecords(1L);
+        int archivedCount = service.archiveSalaryRecords(1L, "2025-07");
 
         // Verify: returned count matches the number of records
         assertThat(archivedCount).isEqualTo(records.size());
@@ -74,7 +75,8 @@ class ArchiveOperationIntegrityPropertyTest {
     void property10_archiveEmptyListReturnsZero() {
         // Edge case: no unarchived records
         SalaryRecordRepository salaryRecordRepository = mock(SalaryRecordRepository.class);
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(new ArrayList<>());
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(new ArrayList<>());
 
         SalaryServiceImpl service = new SalaryServiceImpl(
                 salaryRecordRepository,
@@ -84,7 +86,7 @@ class ArchiveOperationIntegrityPropertyTest {
                 mock(SalaryConfigService.class)
         );
 
-        int archivedCount = service.archiveSalaryRecords(1L);
+        int archivedCount = service.archiveSalaryRecords(1L, "2025-07");
         assertThat(archivedCount).isZero();
     }
 
@@ -95,7 +97,8 @@ class ArchiveOperationIntegrityPropertyTest {
         SalaryRecordRepository salaryRecordRepository = mock(SalaryRecordRepository.class);
         AuditLogRepository auditLogRepository = mock(AuditLogRepository.class);
 
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(records);
         when(salaryRecordRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(auditLogRepository.save(org.mockito.ArgumentMatchers.any())).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -107,7 +110,7 @@ class ArchiveOperationIntegrityPropertyTest {
                 mock(SalaryConfigService.class)
         );
 
-        service.archiveSalaryRecords(1L);
+        service.archiveSalaryRecords(1L, "2025-07");
 
         // All records should share the same archivedAt timestamp (set in a single batch)
         if (!records.isEmpty()) {
@@ -147,6 +150,7 @@ class ArchiveOperationIntegrityPropertyTest {
                         .totalPoints(totalPoints)
                         .miniCoins(miniCoins)
                         .salaryAmount(BigDecimal.valueOf(miniCoins))
+                        .period("2025-07")
                         .archived(false)
                         .archivedAt(null)
                         .build()

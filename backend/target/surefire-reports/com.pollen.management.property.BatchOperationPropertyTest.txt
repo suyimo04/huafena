@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.pollen.management.property.BatchOperationPropertyTest
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.283 s -- in com.pollen.management.property.BatchOperationPropertyTest
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.351 s -- in com.pollen.management.property.BatchOperationPropertyTest

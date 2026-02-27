@@ -1,38 +1,40 @@
 <template>
-  <div class="applications-page">
-    <div class="page-header">
-      <h2 class="page-title">申请管理</h2>
-    </div>
+  <div class="applications-page p-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-5">申请管理</h2>
 
     <el-tabs v-model="activeTab">
       <el-tab-pane label="申请列表" name="applications">
-        <!-- Batch action bar -->
-        <div class="batch-bar">
-          <template v-if="selectedIds.length > 0">
-            <span class="selected-count">已选 {{ selectedIds.length }} 项</span>
-            <el-button type="success" size="small" @click="handleBatchApprove">
-              批量通过
-            </el-button>
-            <el-button type="danger" size="small" @click="handleBatchReject">
-              批量拒绝
-            </el-button>
-            <el-button type="primary" size="small" @click="handleBatchNotify">
-              批量发送面试通知
-            </el-button>
-          </template>
-          <div class="batch-bar-right">
-            <el-button type="primary" plain size="small" @click="handleExport">
-              <el-icon class="mr-1"><Download /></el-icon>
-              导出 Excel
-            </el-button>
+        <!-- Toolbar -->
+        <div class="toolbar-card mb-5">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-2">
+              <template v-if="selectedIds.length > 0">
+                <span class="text-sm text-gray-500">已选 {{ selectedIds.length }} 项</span>
+                <el-button class="btn-pink" size="small" @click="handleBatchApprove">
+                  批量通过
+                </el-button>
+                <el-button class="btn-outline" size="small" @click="handleBatchReject">
+                  批量拒绝
+                </el-button>
+                <el-button class="btn-outline" size="small" @click="handleBatchNotify">
+                  批量发送面试通知
+                </el-button>
+              </template>
+            </div>
+            <div class="flex items-center gap-2">
+              <el-button class="btn-outline" size="small" @click="handleExport">
+                <el-icon class="mr-1"><Download /></el-icon>
+                导出 Excel
+              </el-button>
+            </div>
           </div>
         </div>
 
+        <div class="table-card">
         <el-table
           v-loading="loading"
           :data="applications"
           stripe
-          class="app-table"
           @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" width="50" />
@@ -86,6 +88,7 @@
             </template>
           </el-table-column>
         </el-table>
+        </div>
 
         <!-- Detail Dialog -->
         <el-dialog v-model="detailVisible" title="申请详情" width="700px">
@@ -353,33 +356,54 @@ onMounted(fetchApplications)
 
 <style scoped>
 .applications-page {
-  padding: 20px;
+  background: #fafafa;
+  min-height: 100%;
 }
-.page-header {
-  margin-bottom: 20px;
+
+/* --- Toolbar Card --- */
+.toolbar-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 20px;
+  border: 1px solid #f5e6ea;
+  box-shadow: 0 1px 6px rgba(233, 30, 99, 0.03);
 }
-.page-title {
-  font-size: 20px;
-  font-weight: 600;
+
+/* --- Table Card --- */
+.table-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #f5e6ea;
+  box-shadow: 0 2px 12px rgba(233, 30, 99, 0.04);
+  overflow: hidden;
 }
-.app-table {
-  width: 100%;
+
+/* --- Buttons --- */
+.btn-pink {
+  background: linear-gradient(135deg, #ec407a, #e91e63) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
 }
-.batch-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  min-height: 32px;
+.btn-pink:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f06292, #ec407a) !important;
+  box-shadow: 0 4px 14px rgba(233, 30, 99, 0.3) !important;
 }
-.batch-bar-right {
-  margin-left: auto;
+.btn-outline {
+  background: #fff !important;
+  color: #e91e63 !important;
+  border: 1px solid #f8bbd0 !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
 }
-.selected-count {
-  font-size: 13px;
-  color: #606266;
-  margin-right: 4px;
+.btn-outline:hover {
+  background: #fce4ec !important;
+  border-color: #e91e63 !important;
 }
+
 .exam-tag {
   font-weight: 600;
 }

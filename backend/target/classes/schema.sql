@@ -253,6 +253,20 @@ CREATE TABLE points_records (
 -- -----------------------------------------------------------
 -- 13. 薪资记录表（V3.1 增强：mini_coins 和 salary_amount 使用 AES 加密存储为 VARCHAR）
 -- -----------------------------------------------------------
+-- *** 数据迁移说明（薪酬周期功能上线时执行） ***
+-- 背景：新增 period 字段（VARCHAR(7), DEFAULT '1970-01'）用于标识薪酬周期。
+--       已有记录的 period 默认值为 '1970-01'，需基于 created_at 赋值为实际月份。
+--
+-- MySQL 迁移语句：
+--   UPDATE salary_records SET period = DATE_FORMAT(created_at, '%Y-%m') WHERE period = '1970-01';
+--
+-- H2 迁移语句（开发/测试环境）：
+--   UPDATE salary_records SET period = FORMATDATETIME(created_at, 'yyyy-MM') WHERE period = '1970-01';
+--
+-- 迁移后验证：
+--   SELECT COUNT(*) FROM salary_records WHERE period = '1970-01';  -- 应返回 0
+--   SELECT COUNT(*) FROM salary_records WHERE period IS NULL;       -- 应返回 0
+-- *************************************************************
 CREATE TABLE salary_records (
     id                BIGINT          NOT NULL AUTO_INCREMENT,
     user_id           BIGINT          NOT NULL,
@@ -275,11 +289,13 @@ CREATE TABLE salary_records (
     event_hosting_points        INT NOT NULL DEFAULT 0 COMMENT '活动举办积分',
     birthday_bonus_points       INT NOT NULL DEFAULT 0 COMMENT '生日福利积分',
     monthly_excellent_points    INT NOT NULL DEFAULT 0 COMMENT '月度优秀评议积分',
+    period            VARCHAR(7)      NOT NULL DEFAULT '1970-01' COMMENT '薪酬周期 YYYY-MM',
     archived          TINYINT(1)      NOT NULL DEFAULT 0,
     archived_at       DATETIME        NULL,
     created_at        DATETIME        NULL,
     updated_at        DATETIME        NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_user_period (user_id, period)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='薪资记录表';
 
 -- -----------------------------------------------------------

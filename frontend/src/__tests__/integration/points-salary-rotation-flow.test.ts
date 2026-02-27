@@ -196,7 +196,7 @@ describe('Points-Salary-Rotation Flow - API Contract Alignment', () => {
       }
       const res = await batchSaveSalary(req)
 
-      expect(mockPost).toHaveBeenCalledWith('/salary/batch-save', req)
+      expect(mockPost).toHaveBeenCalledWith('/salary/batch-save', req, { params: { period: undefined } })
       expect(res.data.success).toBe(true)
       expect(res.data.savedRecords).toHaveLength(5)
     })
@@ -263,7 +263,7 @@ describe('Points-Salary-Rotation Flow - API Contract Alignment', () => {
 
       const res = await archiveSalary(1)
 
-      expect(mockPost).toHaveBeenCalledWith('/salary/archive', { operatorId: 1 })
+      expect(mockPost).toHaveBeenCalledWith('/salary/archive', { operatorId: 1 }, { params: { period: undefined } })
       expect(res.data).toBe(5)
     })
   })

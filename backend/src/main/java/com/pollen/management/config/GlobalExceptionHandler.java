@@ -2,6 +2,7 @@ package com.pollen.management.config;
 
 import com.pollen.management.dto.ApiResponse;
 import com.pollen.management.util.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * 全局异常处理器
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
@@ -58,8 +60,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+        log.error("未处理异常: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(500, "服务器内部错误"));
+                .body(ApiResponse.error(500, "服务器内部错误: " + ex.getMessage()));
     }
 }

@@ -255,6 +255,7 @@ class SalaryServiceImplTest {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = createValidBatchRecords();
         when(salaryRecordRepository.saveAll(records)).thenReturn(records);
 
@@ -269,6 +270,7 @@ class SalaryServiceImplTest {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = List.of(
                 SalaryRecord.builder().userId(1L).miniCoins(300).build(),
                 SalaryRecord.builder().userId(2L).miniCoins(300).build()
@@ -281,56 +283,58 @@ class SalaryServiceImplTest {
     }
 
     @Test
-    void batchSave_shouldRejectWhenMiniCoinsBelowRange() {
+    void batchSave_shouldClampMiniCoinsBelowRange() {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
-        records.add(SalaryRecord.builder().userId(1L).miniCoins(199).build()); // below 200
+        records.add(SalaryRecord.builder().userId(1L).miniCoins(100).build()); // below 200
         for (long i = 2; i <= 5; i++) {
             records.add(SalaryRecord.builder().userId(i).miniCoins(400).build());
         }
+        when(salaryRecordRepository.saveAll(records)).thenReturn(records);
 
-        BusinessException ex = assertThrows(BusinessException.class,
-                () -> salaryService.batchSave(records));
-        assertEquals(400, ex.getCode());
-        assertTrue(ex.getMessage().contains("不在 [200, 400] 范围内"));
+        List<SalaryRecord> result = salaryService.batchSave(records);
+
+        assertEquals(5, result.size());
+        assertEquals(200, records.get(0).getMiniCoins()); // clamped to min
     }
 
     @Test
-    void batchSave_shouldRejectWhenMiniCoinsAboveRange() {
+    void batchSave_shouldClampMiniCoinsAboveRange() {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
-        records.add(SalaryRecord.builder().userId(1L).miniCoins(401).build()); // above 400
+        records.add(SalaryRecord.builder().userId(1L).miniCoins(500).build()); // above 400
         for (long i = 2; i <= 5; i++) {
             records.add(SalaryRecord.builder().userId(i).miniCoins(300).build());
         }
+        when(salaryRecordRepository.saveAll(records)).thenReturn(records);
 
-        BusinessException ex = assertThrows(BusinessException.class,
-                () -> salaryService.batchSave(records));
-        assertEquals(400, ex.getCode());
-        assertTrue(ex.getMessage().contains("不在 [200, 400] 范围内"));
+        List<SalaryRecord> result = salaryService.batchSave(records);
+
+        assertEquals(5, result.size());
+        assertEquals(400, records.get(0).getMiniCoins()); // clamped to max
     }
 
     @Test
     void batchSave_shouldRejectWhenTotalExceedsPool() {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
-        when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        when(salaryConfigService.getSalaryPoolTotal()).thenReturn(1500); // pool smaller than 5*400=2000
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
         for (long i = 1; i <= 5; i++) {
-            records.add(SalaryRecord.builder().userId(i).miniCoins(400).build()); // 5 * 400 = 2000, ok
+            records.add(SalaryRecord.builder().userId(i).miniCoins(400).build()); // 5 * 400 = 2000 > 1500
         }
-        // This is exactly 2000, should pass. Let's make it exceed:
-        records.get(0).setMiniCoins(401); // now total = 2001
 
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> salaryService.batchSave(records));
         assertEquals(400, ex.getCode());
-        // Either range or total error
-        assertTrue(ex.getMessage().contains("不在 [200, 400] 范围内") || ex.getMessage().contains("超过薪资池上限"));
+        assertTrue(ex.getMessage().contains("超过薪资池上限"));
     }
 
     @Test
@@ -338,6 +342,7 @@ class SalaryServiceImplTest {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
         for (long i = 1; i <= 5; i++) {
             records.add(SalaryRecord.builder().userId(i).miniCoins(400).build()); // 5 * 400 = 2000
@@ -454,6 +459,7 @@ class SalaryServiceImplTest {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = createValidBatchRecords();
         // Should not throw
         assertDoesNotThrow(() -> salaryService.validateBatch(records));
@@ -464,6 +470,7 @@ class SalaryServiceImplTest {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> salaryService.validateBatch(List.of()));
         assertEquals(400, ex.getCode());
@@ -473,14 +480,16 @@ class SalaryServiceImplTest {
 
     @Test
     void batchSaveWithValidation_shouldSaveValidRecordsAndCreateAuditLog() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = createValidBatchRecords();
         when(salaryRecordRepository.saveAll(records)).thenReturn(records);
         when(auditLogRepository.save(any(AuditLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
         assertTrue(response.isSuccess());
         assertEquals(5, response.getSavedRecords().size());
@@ -495,15 +504,18 @@ class SalaryServiceImplTest {
 
     @Test
     void batchSaveWithValidation_shouldReturnErrorsWhenMemberCountNotFive() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        // Only 2 records with IDs that match formal members (IDs 1,2 out of 5 expected)
+        stubFormalMembers(5);
         List<SalaryRecord> records = List.of(
                 SalaryRecord.builder().userId(1L).miniCoins(300).build(),
                 SalaryRecord.builder().userId(2L).miniCoins(300).build()
         );
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
         assertFalse(response.isSuccess());
         assertNotNull(response.getGlobalError());
@@ -513,70 +525,60 @@ class SalaryServiceImplTest {
     }
 
     @Test
-    void batchSaveWithValidation_shouldReturnViolatingUserIdsWhenMiniCoinsOutOfRange() {
+    void batchSaveWithValidation_shouldClampMiniCoinsToRange() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
-        records.add(SalaryRecord.builder().userId(1L).miniCoins(199).build()); // below 200
-        records.add(SalaryRecord.builder().userId(2L).miniCoins(401).build()); // above 400
+        records.add(SalaryRecord.builder().userId(1L).miniCoins(100).build()); // below 200 → clamped to 200
+        records.add(SalaryRecord.builder().userId(2L).miniCoins(500).build()); // above 400 → clamped to 400
         records.add(SalaryRecord.builder().userId(3L).miniCoins(300).build());
         records.add(SalaryRecord.builder().userId(4L).miniCoins(300).build());
         records.add(SalaryRecord.builder().userId(5L).miniCoins(300).build());
+        when(salaryRecordRepository.saveAll(records)).thenReturn(records);
+        when(auditLogRepository.save(any(AuditLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
-        assertFalse(response.isSuccess());
-        assertEquals(2, response.getErrors().size());
-        assertTrue(response.getViolatingUserIds().contains(1L));
-        assertTrue(response.getViolatingUserIds().contains(2L));
-        assertFalse(response.getViolatingUserIds().contains(3L));
-        // Each error should reference the correct field
-        for (BatchSaveResponse.ValidationError error : response.getErrors()) {
-            assertEquals("miniCoins", error.getField());
-        }
-        verify(salaryRecordRepository, never()).saveAll(any());
+        assertTrue(response.isSuccess());
+        // Verify clamping happened
+        assertEquals(200, records.get(0).getMiniCoins());
+        assertEquals(400, records.get(1).getMiniCoins());
     }
 
     @Test
     void batchSaveWithValidation_shouldReturnGlobalErrorWhenTotalExceedsPool() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
-        when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        when(salaryConfigService.getSalaryPoolTotal()).thenReturn(1500); // pool smaller than 5*400=2000
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
-        // 5 * 400 = 2000, but we set one to 400 and rest to 401 won't work (range check first)
-        // Use valid range but total > 2000: 400 * 4 + 400 = 2000 is ok
-        // Let's use 400 + 400 + 400 + 400 + 401 → range error first
-        // Better: 400 + 400 + 400 + 400 + 400 = 2000 is ok
-        // To test total only: 400 + 400 + 400 + 400 + 400 = 2000 (ok)
-        // We need total > 2000 with all in [200,400]. Not possible since 5*400=2000.
-        // So total > 2000 can only happen with range violations too.
-        // Let's test with range violation that also causes total > 2000:
-        records.add(SalaryRecord.builder().userId(1L).miniCoins(401).build());
-        records.add(SalaryRecord.builder().userId(2L).miniCoins(400).build());
-        records.add(SalaryRecord.builder().userId(3L).miniCoins(400).build());
-        records.add(SalaryRecord.builder().userId(4L).miniCoins(400).build());
-        records.add(SalaryRecord.builder().userId(5L).miniCoins(400).build());
+        for (long i = 1; i <= 5; i++) {
+            records.add(SalaryRecord.builder().userId(i).miniCoins(400).build()); // 5*400=2000 > 1500
+        }
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
         assertFalse(response.isSuccess());
-        // Should have range error for userId=1 AND global total error
         assertNotNull(response.getGlobalError());
         assertTrue(response.getGlobalError().contains("超过薪资池上限"));
-        assertTrue(response.getViolatingUserIds().contains(1L));
     }
 
     @Test
     void batchSaveWithValidation_shouldHandleOptimisticLockConflict() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = createValidBatchRecords();
         when(salaryRecordRepository.saveAll(records))
                 .thenThrow(new ObjectOptimisticLockingFailureException(SalaryRecord.class.getName(), 1L));
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
         assertFalse(response.isSuccess());
         assertNotNull(response.getGlobalError());
@@ -586,9 +588,11 @@ class SalaryServiceImplTest {
 
     @Test
     void batchSaveWithValidation_shouldAcceptExactPoolTotal() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
         for (long i = 1; i <= 5; i++) {
             records.add(SalaryRecord.builder().userId(i).miniCoins(400).build());
@@ -596,7 +600,7 @@ class SalaryServiceImplTest {
         when(salaryRecordRepository.saveAll(records)).thenReturn(records);
         when(auditLogRepository.save(any(AuditLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
         assertTrue(response.isSuccess());
         assertEquals(5, response.getSavedRecords().size());
@@ -604,9 +608,11 @@ class SalaryServiceImplTest {
 
     @Test
     void batchSaveWithValidation_shouldAcceptMinimumValidCoins() {
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
         for (long i = 1; i <= 5; i++) {
             records.add(SalaryRecord.builder().userId(i).miniCoins(200).build());
@@ -614,7 +620,7 @@ class SalaryServiceImplTest {
         when(salaryRecordRepository.saveAll(records)).thenReturn(records);
         when(auditLogRepository.save(any(AuditLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L);
+        BatchSaveResponse response = salaryService.batchSaveWithValidation(records, 100L, "2025-07");
 
         assertTrue(response.isSuccess());
     }
@@ -626,6 +632,7 @@ class SalaryServiceImplTest {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        stubFormalMembers(5);
         List<SalaryRecord> records = createValidBatchRecords();
         BatchSaveResponse result = salaryService.validateBatchDetailed(records);
         assertTrue(result.isSuccess());
@@ -633,24 +640,24 @@ class SalaryServiceImplTest {
     }
 
     @Test
-    void validateBatchDetailed_shouldCollectAllRangeViolations() {
+    void validateBatchDetailed_shouldClampRangeViolations() {
         when(salaryConfigService.getFormalMemberCount()).thenReturn(5);
         when(salaryConfigService.getMiniCoinsRange()).thenReturn(new int[]{200, 400});
         when(salaryConfigService.getSalaryPoolTotal()).thenReturn(2000);
+        // Use IDs 1-5 that match formal members
+        stubFormalMembers(5);
         List<SalaryRecord> records = new ArrayList<>();
-        records.add(SalaryRecord.builder().userId(10L).miniCoins(100).build());
-        records.add(SalaryRecord.builder().userId(20L).miniCoins(500).build());
-        records.add(SalaryRecord.builder().userId(30L).miniCoins(300).build());
-        records.add(SalaryRecord.builder().userId(40L).miniCoins(300).build());
-        records.add(SalaryRecord.builder().userId(50L).miniCoins(300).build());
+        records.add(SalaryRecord.builder().userId(1L).miniCoins(100).build()); // below → 200
+        records.add(SalaryRecord.builder().userId(2L).miniCoins(500).build()); // above → 400
+        records.add(SalaryRecord.builder().userId(3L).miniCoins(300).build());
+        records.add(SalaryRecord.builder().userId(4L).miniCoins(300).build());
+        records.add(SalaryRecord.builder().userId(5L).miniCoins(300).build());
 
         BatchSaveResponse result = salaryService.validateBatchDetailed(records);
 
-        assertFalse(result.isSuccess());
-        assertEquals(2, result.getErrors().size());
-        assertEquals(2, result.getViolatingUserIds().size());
-        assertTrue(result.getViolatingUserIds().contains(10L));
-        assertTrue(result.getViolatingUserIds().contains(20L));
+        assertTrue(result.isSuccess());
+        assertEquals(200, records.get(0).getMiniCoins());
+        assertEquals(400, records.get(1).getMiniCoins());
     }
 
     // --- generateSalaryReport tests ---
@@ -665,13 +672,13 @@ class SalaryServiceImplTest {
                     .deductions(5).totalPoints(105).miniCoins(400)
                     .salaryAmount(new BigDecimal("400")).remark("test").archived(false).build());
         }
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(records);
         for (long i = 1; i <= 3; i++) {
             User user = User.builder().id(i).username("member" + i).role(Role.MEMBER).build();
             when(userRepository.findById(i)).thenReturn(Optional.of(user));
         }
 
-        SalaryReportDTO report = salaryService.generateSalaryReport();
+        SalaryReportDTO report = salaryService.generateSalaryReport("2025-07");
 
         assertNotNull(report);
         assertNotNull(report.getGeneratedAt());
@@ -693,10 +700,10 @@ class SalaryServiceImplTest {
 
     @Test
     void generateSalaryReport_shouldThrowWhenNoUnarchivedRecords() {
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(List.of());
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(List.of());
 
         BusinessException ex = assertThrows(BusinessException.class,
-                () -> salaryService.generateSalaryReport());
+                () -> salaryService.generateSalaryReport("2025-07"));
         assertEquals(404, ex.getCode());
         assertTrue(ex.getMessage().contains("没有未归档的薪资记录"));
     }
@@ -709,10 +716,10 @@ class SalaryServiceImplTest {
                         .deductions(0).totalPoints(50).miniCoins(300)
                         .salaryAmount(new BigDecimal("300")).archived(false).build()
         );
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(records);
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        SalaryReportDTO report = salaryService.generateSalaryReport();
+        SalaryReportDTO report = salaryService.generateSalaryReport("2025-07");
 
         assertEquals(1, report.getDetails().size());
         assertEquals("unknown", report.getDetails().get(0).getUsername());
@@ -728,11 +735,12 @@ class SalaryServiceImplTest {
             records.add(SalaryRecord.builder()
                     .id(i).userId(i).miniCoins(400).archived(false).build());
         }
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(records);
         when(salaryRecordRepository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
         when(auditLogRepository.save(any(AuditLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        int count = salaryService.archiveSalaryRecords(100L);
+        int count = salaryService.archiveSalaryRecords(100L, "2025-07");
 
         assertEquals(5, count);
         for (SalaryRecord record : records) {
@@ -749,9 +757,10 @@ class SalaryServiceImplTest {
 
     @Test
     void archiveSalaryRecords_shouldReturnZeroWhenNoRecordsToArchive() {
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(List.of());
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(List.of());
 
-        int count = salaryService.archiveSalaryRecords(100L);
+        int count = salaryService.archiveSalaryRecords(100L, "2025-07");
 
         assertEquals(0, count);
         verify(salaryRecordRepository, never()).saveAll(any());
@@ -763,11 +772,12 @@ class SalaryServiceImplTest {
         List<SalaryRecord> records = new ArrayList<>();
         records.add(SalaryRecord.builder().id(1L).userId(1L).miniCoins(400).archived(false).build());
         records.add(SalaryRecord.builder().id(2L).userId(2L).miniCoins(400).archived(false).build());
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(records);
         when(salaryRecordRepository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
         when(auditLogRepository.save(any(AuditLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        salaryService.archiveSalaryRecords(100L);
+        salaryService.archiveSalaryRecords(100L, "2025-07");
 
         // All records should have the same archivedAt timestamp
         assertEquals(records.get(0).getArchivedAt(), records.get(1).getArchivedAt());
@@ -1044,10 +1054,11 @@ class SalaryServiceImplTest {
                     .archived(false)
                     .build());
         }
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(records);
         when(salaryRecordRepository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
 
-        List<SalaryRecord> result = salaryService.calculateAndDistribute();
+        List<SalaryRecord> result = salaryService.calculateAndDistribute("2025-07");
 
         assertEquals(3, result.size());
         for (SalaryRecord r : result) {
@@ -1074,10 +1085,11 @@ class SalaryServiceImplTest {
 
     @Test
     void calculateAndDistribute_shouldThrowWhenNoRecords() {
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(List.of());
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(List.of());
 
         BusinessException ex = assertThrows(BusinessException.class,
-                () -> salaryService.calculateAndDistribute());
+                () -> salaryService.calculateAndDistribute("2025-07"));
         assertEquals(404, ex.getCode());
         assertTrue(ex.getMessage().contains("没有未归档的薪资记录"));
     }
@@ -1104,10 +1116,11 @@ class SalaryServiceImplTest {
                     .archived(false)
                     .build());
         }
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(records);
+        when(salaryRecordRepository.existsByPeriodAndArchivedTrue("2025-07")).thenReturn(false);
+        when(salaryRecordRepository.findByPeriodAndArchivedFalse("2025-07")).thenReturn(records);
         when(salaryRecordRepository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
 
-        List<SalaryRecord> result = salaryService.calculateAndDistribute();
+        List<SalaryRecord> result = salaryService.calculateAndDistribute("2025-07");
 
         assertEquals(5, result.size());
         int total = result.stream().mapToInt(SalaryRecord::getMiniCoins).sum();
@@ -1140,9 +1153,9 @@ class SalaryServiceImplTest {
                 .monthlyExcellentPoints(10)
                 .archived(false)
                 .build();
-        when(salaryRecordRepository.findAll()).thenReturn(List.of(record));
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(List.of(record));
 
-        List<SalaryMemberDTO> result = salaryService.getSalaryMembers();
+        List<SalaryMemberDTO> result = salaryService.getSalaryMembers("2025-07");
 
         assertEquals(1, result.size());
         SalaryMemberDTO dto = result.get(0);
@@ -1164,9 +1177,9 @@ class SalaryServiceImplTest {
         User member = User.builder().id(1L).username("member1").role(Role.LEADER).enabled(true).build();
         when(userRepository.findByRoleIn(List.of(Role.LEADER, Role.VICE_LEADER, Role.INTERN)))
                 .thenReturn(List.of(member));
-        when(salaryRecordRepository.findAll()).thenReturn(List.of());
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(List.of());
 
-        List<SalaryMemberDTO> result = salaryService.getSalaryMembers();
+        List<SalaryMemberDTO> result = salaryService.getSalaryMembers("2025-07");
 
         assertEquals(1, result.size());
         SalaryMemberDTO dto = result.get(0);
@@ -1202,11 +1215,11 @@ class SalaryServiceImplTest {
                 .monthlyExcellentPoints(10)
                 .archived(false)
                 .build();
-        when(salaryRecordRepository.findByArchivedFalse()).thenReturn(List.of(record));
+        when(salaryRecordRepository.findByPeriod("2025-07")).thenReturn(List.of(record));
         when(userRepository.findById(1L)).thenReturn(Optional.of(
                 User.builder().id(1L).username("member1").role(Role.MEMBER).build()));
 
-        SalaryReportDTO report = salaryService.generateSalaryReport();
+        SalaryReportDTO report = salaryService.generateSalaryReport("2025-07");
 
         assertEquals(2000, report.getSalaryPoolTotal());
         assertEquals(400, report.getAllocatedTotal());
@@ -1289,5 +1302,11 @@ class SalaryServiceImplTest {
                     .build());
         }
         return records;
+    }
+
+    /** Stub userRepository to return formal members with IDs 1..count */
+    private void stubFormalMembers(int count) {
+        when(userRepository.findByRoleIn(List.of(Role.VICE_LEADER, Role.MEMBER)))
+                .thenReturn(createFormalMembers(count));
     }
 }

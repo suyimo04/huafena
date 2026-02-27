@@ -1,5 +1,6 @@
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\config\DataInitializerTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\config\RedisConfigTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\config\SalaryPeriodMigrationTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\controller\ActivityControllerTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\controller\ApplicationControllerTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\controller\DashboardControllerTest.java
@@ -27,13 +28,21 @@ E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\AesEncryptionPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ApplicationScreeningPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ApplicationTimelinePropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ArchivedPeriodWriteProtectionPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ArchiveOperationIntegrityPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\BatchOperationPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\CheckinTierLookupPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\CreatePeriodInitPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\DataMigrationPeriodPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\EmailRateLimiterPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\ExcelExportPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\InternshipCompletionPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\LatestActivePeriodPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\MemberStatusPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\PeriodArchiveCompletenessPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\PeriodFormatInvariantPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\PeriodListSortAndStatusPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\PeriodQueryIsolationPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\PointsToMiniCoinsPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\RedisCacheConsistencyPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\RotationThresholdEffectivenessPropertyTest.java
@@ -44,6 +53,7 @@ E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\SalaryPoolDistributionPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\SalaryRangeAndTotalInvariantPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\SalaryReportCompletenessPropertyTest.java
+E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\UserPeriodUniquenessPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\property\WeeklyReportAggregationPropertyTest.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\security\JwtAndRbacProperties.java
 E:\Desktop\Project\huafena\backend\src\test\java\com\pollen\management\security\PasswordEncryptionProperties.java

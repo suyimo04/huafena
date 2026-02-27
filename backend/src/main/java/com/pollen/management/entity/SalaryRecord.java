@@ -1,7 +1,5 @@
 package com.pollen.management.entity;
 
-import com.pollen.management.util.EncryptedFieldConverter;
-import com.pollen.management.util.EncryptedIntegerConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -22,6 +20,9 @@ public class SalaryRecord {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false, length = 7)
+    private String period;  // 格式 "YYYY-MM"
+
     @Column(nullable = false)
     @Builder.Default
     private Integer basePoints = 0;
@@ -39,12 +40,10 @@ public class SalaryRecord {
     private Integer totalPoints = 0;
 
     @Column(nullable = false)
-    @Convert(converter = EncryptedIntegerConverter.class)
     @Builder.Default
     private Integer miniCoins = 0;
 
     @Column(nullable = false)
-    @Convert(converter = EncryptedFieldConverter.class)
     @Builder.Default
     private BigDecimal salaryAmount = BigDecimal.ZERO;
 

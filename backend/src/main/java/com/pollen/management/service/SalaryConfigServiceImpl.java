@@ -36,6 +36,8 @@ public class SalaryConfigServiceImpl implements SalaryConfigService {
     static final int DEFAULT_DEMOTION_CONSECUTIVE_MONTHS = 2;
     static final int DEFAULT_DISMISSAL_POINTS_THRESHOLD = 100;
     static final int DEFAULT_DISMISSAL_CONSECUTIVE_MONTHS = 2;
+    static final int DEFAULT_VIOLATION_HANDLING_MULTIPLIER = 3;
+    static final int DEFAULT_ANNOUNCEMENT_MULTIPLIER = 5;
 
     static final String DEFAULT_CHECKIN_TIERS_JSON = "[" +
             "{\"minCount\":0,\"maxCount\":19,\"points\":-20,\"label\":\"不合格\"}," +
@@ -132,6 +134,16 @@ public class SalaryConfigServiceImpl implements SalaryConfigService {
                 .dismissalPointsThreshold(getIntConfig("dismissal_points_threshold", DEFAULT_DISMISSAL_POINTS_THRESHOLD))
                 .dismissalConsecutiveMonths(getIntConfig("dismissal_consecutive_months", DEFAULT_DISMISSAL_CONSECUTIVE_MONTHS))
                 .build();
+    }
+
+    @Override
+    public int getViolationHandlingMultiplier() {
+        return getIntConfig("violation_handling_multiplier", DEFAULT_VIOLATION_HANDLING_MULTIPLIER);
+    }
+
+    @Override
+    public int getAnnouncementMultiplier() {
+        return getIntConfig("announcement_multiplier", DEFAULT_ANNOUNCEMENT_MULTIPLIER);
     }
 
     /**

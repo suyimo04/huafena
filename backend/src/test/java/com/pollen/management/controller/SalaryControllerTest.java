@@ -67,24 +67,26 @@ class SalaryControllerTest {
                 SalaryRecord.builder().id(2L).userId(11L).totalPoints(150).miniCoins(300)
                         .communityActivityPoints(60).checkinCount(35).checkinPoints(0).build()
         );
-        when(salaryService.calculateAndDistribute()).thenReturn(records);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.calculateAndDistribute("2025-07")).thenReturn(records);
 
-        ApiResponse<List<SalaryRecord>> response = controller.calculateAndDistribute();
+        ApiResponse<List<SalaryRecord>> response = controller.calculateAndDistribute(null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getMessage()).isEqualTo("success");
         assertThat(response.getData()).hasSize(2);
         assertThat(response.getData().get(0).getCommunityActivityPoints()).isEqualTo(80);
         assertThat(response.getData().get(0).getCheckinPoints()).isEqualTo(30);
-        verify(salaryService).calculateAndDistribute();
+        verify(salaryService).calculateAndDistribute("2025-07");
     }
 
     @Test
     void calculateAndDistribute_noRecords_shouldPropagateException() {
-        when(salaryService.calculateAndDistribute())
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.calculateAndDistribute("2025-07"))
                 .thenThrow(new BusinessException(404, "当前没有未归档的薪资记录"));
 
-        assertThatThrownBy(() -> controller.calculateAndDistribute())
+        assertThatThrownBy(() -> controller.calculateAndDistribute(null))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("当前没有未归档的薪资记录");
     }
@@ -169,14 +171,15 @@ class SalaryControllerTest {
                 .records(records).operatorId(1L).build();
         BatchSaveResponse serviceResponse = BatchSaveResponse.builder()
                 .success(true).savedRecords(records).build();
-        when(salaryService.batchSaveWithValidation(records, 1L)).thenReturn(serviceResponse);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.batchSaveWithValidation(records, 1L, "2025-07")).thenReturn(serviceResponse);
 
-        ApiResponse<BatchSaveResponse> response = controller.batchSave(request);
+        ApiResponse<BatchSaveResponse> response = controller.batchSave(request, null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData().isSuccess()).isTrue();
         assertThat(response.getData().getSavedRecords()).hasSize(5);
-        verify(salaryService).batchSaveWithValidation(records, 1L);
+        verify(salaryService).batchSaveWithValidation(records, 1L, "2025-07");
     }
 
     @Test
@@ -193,9 +196,10 @@ class SalaryControllerTest {
                 .errors(List.of(BatchSaveResponse.ValidationError.builder()
                         .userId(10L).field("miniCoins").message("迷你币 500 不在 [200, 400] 范围内").build()))
                 .build();
-        when(salaryService.batchSaveWithValidation(records, 1L)).thenReturn(serviceResponse);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.batchSaveWithValidation(records, 1L, "2025-07")).thenReturn(serviceResponse);
 
-        ApiResponse<BatchSaveResponse> response = controller.batchSave(request);
+        ApiResponse<BatchSaveResponse> response = controller.batchSave(request, null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData().isSuccess()).isFalse();
@@ -220,16 +224,17 @@ class SalaryControllerTest {
                                 .salaryAmount(BigDecimal.valueOf(230)).build()
                 ))
                 .build();
-        when(salaryService.generateSalaryReport()).thenReturn(report);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.generateSalaryReport("2025-07")).thenReturn(report);
 
-        ApiResponse<SalaryReportDTO> response = controller.generateReport();
+        ApiResponse<SalaryReportDTO> response = controller.generateReport(null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData().getSalaryPoolTotal()).isEqualTo(2000);
         assertThat(response.getData().getAllocatedTotal()).isEqualTo(1800);
         assertThat(response.getData().getDetails()).hasSize(1);
         assertThat(response.getData().getDetails().get(0).getUsername()).isEqualTo("member1");
-        verify(salaryService).generateSalaryReport();
+        verify(salaryService).generateSalaryReport("2025-07");
     }
 
     @Test
@@ -240,9 +245,10 @@ class SalaryControllerTest {
                 .allocatedTotal(0)
                 .details(Collections.emptyList())
                 .build();
-        when(salaryService.generateSalaryReport()).thenReturn(report);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.generateSalaryReport("2025-07")).thenReturn(report);
 
-        ApiResponse<SalaryReportDTO> response = controller.generateReport();
+        ApiResponse<SalaryReportDTO> response = controller.generateReport(null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData().getAllocatedTotal()).isEqualTo(0);
@@ -254,23 +260,191 @@ class SalaryControllerTest {
     @Test
     void archiveSalaryRecords_shouldReturnArchivedCount() {
         ArchiveRequest request = ArchiveRequest.builder().operatorId(1L).build();
-        when(salaryService.archiveSalaryRecords(1L)).thenReturn(5);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.archiveSalaryRecords(1L, "2025-07")).thenReturn(5);
 
-        ApiResponse<Integer> response = controller.archiveSalaryRecords(request);
+        ApiResponse<Integer> response = controller.archiveSalaryRecords(request, null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData()).isEqualTo(5);
-        verify(salaryService).archiveSalaryRecords(1L);
+        verify(salaryService).archiveSalaryRecords(1L, "2025-07");
     }
 
     @Test
     void archiveSalaryRecords_noRecordsToArchive_shouldReturnZero() {
         ArchiveRequest request = ArchiveRequest.builder().operatorId(1L).build();
-        when(salaryService.archiveSalaryRecords(1L)).thenReturn(0);
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.archiveSalaryRecords(1L, "2025-07")).thenReturn(0);
 
-        ApiResponse<Integer> response = controller.archiveSalaryRecords(request);
+        ApiResponse<Integer> response = controller.archiveSalaryRecords(request, null);
 
         assertThat(response.getCode()).isEqualTo(200);
         assertThat(response.getData()).isEqualTo(0);
     }
+
+
+    // --- GET /api/salary/periods ---
+
+    @Test
+    void getPeriods_shouldReturnPeriodListFromService() {
+        List<SalaryPeriodDTO> periods = List.of(
+                SalaryPeriodDTO.builder().period("2025-07").archived(false).recordCount(5).build(),
+                SalaryPeriodDTO.builder().period("2025-06").archived(true).recordCount(4).build()
+        );
+        when(salaryService.getPeriodList()).thenReturn(periods);
+
+        ApiResponse<List<SalaryPeriodDTO>> response = controller.getPeriods();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).hasSize(2);
+        assertThat(response.getData().get(0).getPeriod()).isEqualTo("2025-07");
+        assertThat(response.getData().get(0).isArchived()).isFalse();
+        assertThat(response.getData().get(0).getRecordCount()).isEqualTo(5);
+        assertThat(response.getData().get(1).getPeriod()).isEqualTo("2025-06");
+        assertThat(response.getData().get(1).isArchived()).isTrue();
+        verify(salaryService).getPeriodList();
+    }
+
+    @Test
+    void getPeriods_empty_shouldReturnEmptyList() {
+        when(salaryService.getPeriodList()).thenReturn(Collections.emptyList());
+
+        ApiResponse<List<SalaryPeriodDTO>> response = controller.getPeriods();
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).isEmpty();
+    }
+
+    // --- POST /api/salary/periods ---
+
+    @Test
+    void createPeriod_shouldDelegateToServiceAndReturnRecords() {
+        CreatePeriodRequest request = CreatePeriodRequest.builder().period("2025-08").build();
+        List<SalaryRecord> records = List.of(
+                SalaryRecord.builder().id(1L).userId(10L).period("2025-08").totalPoints(0).miniCoins(0).build(),
+                SalaryRecord.builder().id(2L).userId(11L).period("2025-08").totalPoints(0).miniCoins(0).build()
+        );
+        when(salaryService.createPeriod("2025-08")).thenReturn(records);
+
+        ApiResponse<List<SalaryRecord>> response = controller.createPeriod(request);
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).hasSize(2);
+        assertThat(response.getData().get(0).getPeriod()).isEqualTo("2025-08");
+        assertThat(response.getData().get(0).getTotalPoints()).isEqualTo(0);
+        verify(salaryService).createPeriod("2025-08");
+    }
+
+    @Test
+    void createPeriod_duplicatePeriod_shouldPropagateException() {
+        CreatePeriodRequest request = CreatePeriodRequest.builder().period("2025-07").build();
+        when(salaryService.createPeriod("2025-07"))
+                .thenThrow(new BusinessException(409, "周期 2025-07 已存在"));
+
+        assertThatThrownBy(() -> controller.createPeriod(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("周期 2025-07 已存在");
+    }
+
+    // --- GET /api/salary/members with period parameter ---
+
+    @Test
+    void getSalaryMembers_withoutPeriod_shouldUseLatestActivePeriod() {
+        List<SalaryMemberDTO> members = List.of(
+                SalaryMemberDTO.builder().userId(10L).username("member1").role("MEMBER").totalPoints(100).build()
+        );
+        when(salaryService.getLatestActivePeriod()).thenReturn("2025-07");
+        when(salaryService.getSalaryMembers("2025-07")).thenReturn(members);
+
+        ApiResponse<List<SalaryMemberDTO>> response = controller.getSalaryMembers(null);
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).hasSize(1);
+        assertThat(response.getData().get(0).getUsername()).isEqualTo("member1");
+        verify(salaryService).getLatestActivePeriod();
+        verify(salaryService).getSalaryMembers("2025-07");
+    }
+
+    @Test
+    void getSalaryMembers_withPeriod_shouldPassPeriodDirectly() {
+        List<SalaryMemberDTO> members = List.of(
+                SalaryMemberDTO.builder().userId(10L).username("member1").role("MEMBER").totalPoints(80).build()
+        );
+        when(salaryService.getSalaryMembers("2025-06")).thenReturn(members);
+
+        ApiResponse<List<SalaryMemberDTO>> response = controller.getSalaryMembers("2025-06");
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).hasSize(1);
+        verify(salaryService, never()).getLatestActivePeriod();
+        verify(salaryService).getSalaryMembers("2025-06");
+    }
+
+    // --- Period pass-through tests ---
+
+    @Test
+    void calculateAndDistribute_withExplicitPeriod_shouldPassPeriodDirectly() {
+        List<SalaryRecord> records = List.of(
+                SalaryRecord.builder().id(1L).userId(10L).period("2025-06").totalPoints(200).build()
+        );
+        when(salaryService.calculateAndDistribute("2025-06")).thenReturn(records);
+
+        ApiResponse<List<SalaryRecord>> response = controller.calculateAndDistribute("2025-06");
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).hasSize(1);
+        verify(salaryService, never()).getLatestActivePeriod();
+        verify(salaryService).calculateAndDistribute("2025-06");
+    }
+
+    @Test
+    void batchSave_withExplicitPeriod_shouldPassPeriodDirectly() {
+        List<SalaryRecord> records = List.of(
+                SalaryRecord.builder().id(1L).userId(10L).miniCoins(400).build()
+        );
+        BatchSaveRequest request = BatchSaveRequest.builder()
+                .records(records).operatorId(1L).build();
+        BatchSaveResponse serviceResponse = BatchSaveResponse.builder()
+                .success(true).savedRecords(records).build();
+        when(salaryService.batchSaveWithValidation(records, 1L, "2025-06")).thenReturn(serviceResponse);
+
+        ApiResponse<BatchSaveResponse> response = controller.batchSave(request, "2025-06");
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData().isSuccess()).isTrue();
+        verify(salaryService, never()).getLatestActivePeriod();
+        verify(salaryService).batchSaveWithValidation(records, 1L, "2025-06");
+    }
+
+    @Test
+    void archiveSalaryRecords_withExplicitPeriod_shouldPassPeriodDirectly() {
+        ArchiveRequest request = ArchiveRequest.builder().operatorId(1L).build();
+        when(salaryService.archiveSalaryRecords(1L, "2025-06")).thenReturn(3);
+
+        ApiResponse<Integer> response = controller.archiveSalaryRecords(request, "2025-06");
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData()).isEqualTo(3);
+        verify(salaryService, never()).getLatestActivePeriod();
+        verify(salaryService).archiveSalaryRecords(1L, "2025-06");
+    }
+
+    @Test
+    void generateReport_withExplicitPeriod_shouldPassPeriodDirectly() {
+        SalaryReportDTO report = SalaryReportDTO.builder()
+                .generatedAt(LocalDateTime.now())
+                .salaryPoolTotal(2000)
+                .allocatedTotal(1500)
+                .details(Collections.emptyList())
+                .build();
+        when(salaryService.generateSalaryReport("2025-06")).thenReturn(report);
+
+        ApiResponse<SalaryReportDTO> response = controller.generateReport("2025-06");
+
+        assertThat(response.getCode()).isEqualTo(200);
+        assertThat(response.getData().getAllocatedTotal()).isEqualTo(1500);
+        verify(salaryService, never()).getLatestActivePeriod();
+        verify(salaryService).generateSalaryReport("2025-06");
+    }
+
 }

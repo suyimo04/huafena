@@ -40,8 +40,32 @@ public class SalaryController {
      */
     @PostMapping("/calculate-distribute")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    public ApiResponse<List<SalaryRecord>> calculateAndDistribute() {
-        List<SalaryRecord> records = salaryService.calculateAndDistribute();
+    public ApiResponse<List<SalaryRecord>> calculateAndDistribute(
+            @RequestParam(required = false) String period) {
+        String effectivePeriod = period != null ? period : salaryService.getLatestActivePeriod();
+        List<SalaryRecord> records = salaryService.calculateAndDistribute(effectivePeriod);
+        return ApiResponse.success(records);
+    }
+
+    /**
+     * 获取薪酬周期列表
+     * ADMIN、LEADER、VICE_LEADER 可查看
+     */
+    @GetMapping("/periods")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'VICE_LEADER')")
+    public ApiResponse<List<SalaryPeriodDTO>> getPeriods() {
+        List<SalaryPeriodDTO> periods = salaryService.getPeriodList();
+        return ApiResponse.success(periods);
+    }
+
+    /**
+     * 创建新的薪酬周期
+     * 仅 ADMIN/LEADER 可操作
+     */
+    @PostMapping("/periods")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
+    public ApiResponse<List<SalaryRecord>> createPeriod(@Valid @RequestBody CreatePeriodRequest request) {
+        List<SalaryRecord> records = salaryService.createPeriod(request.getPeriod());
         return ApiResponse.success(records);
     }
 
@@ -60,8 +84,10 @@ public class SalaryController {
      * ADMIN、LEADER、VICE_LEADER 可查看
      */
     @GetMapping("/members")
-    public ApiResponse<List<SalaryMemberDTO>> getSalaryMembers() {
-        List<SalaryMemberDTO> members = salaryService.getSalaryMembers();
+    public ApiResponse<List<SalaryMemberDTO>> getSalaryMembers(
+            @RequestParam(required = false) String period) {
+        String effectivePeriod = period != null ? period : salaryService.getLatestActivePeriod();
+        List<SalaryMemberDTO> members = salaryService.getSalaryMembers(effectivePeriod);
         return ApiResponse.success(members);
     }
 
@@ -84,9 +110,12 @@ public class SalaryController {
      */
     @PostMapping("/batch-save")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    public ApiResponse<BatchSaveResponse> batchSave(@Valid @RequestBody BatchSaveRequest request) {
+    public ApiResponse<BatchSaveResponse> batchSave(
+            @Valid @RequestBody BatchSaveRequest request,
+            @RequestParam(required = false) String period) {
+        String effectivePeriod = period != null ? period : salaryService.getLatestActivePeriod();
         BatchSaveResponse response = salaryService.batchSaveWithValidation(
-                request.getRecords(), request.getOperatorId());
+                request.getRecords(), request.getOperatorId(), effectivePeriod);
         return ApiResponse.success(response);
     }
 
@@ -95,8 +124,10 @@ public class SalaryController {
      * LEADER、VICE_LEADER、MEMBER 可查看
      */
     @GetMapping("/report")
-    public ApiResponse<SalaryReportDTO> generateReport() {
-        SalaryReportDTO report = salaryService.generateSalaryReport();
+    public ApiResponse<SalaryReportDTO> generateReport(
+            @RequestParam(required = false) String period) {
+        String effectivePeriod = period != null ? period : salaryService.getLatestActivePeriod();
+        SalaryReportDTO report = salaryService.generateSalaryReport(effectivePeriod);
         return ApiResponse.success(report);
     }
 
@@ -106,8 +137,24 @@ public class SalaryController {
      */
     @PostMapping("/archive")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    public ApiResponse<Integer> archiveSalaryRecords(@Valid @RequestBody ArchiveRequest request) {
-        int archivedCount = salaryService.archiveSalaryRecords(request.getOperatorId());
+    public ApiResponse<Integer> archiveSalaryRecords(
+            @Valid @RequestBody ArchiveRequest request,
+            @RequestParam(required = false) String period) {
+        String effectivePeriod = period != null ? period : salaryService.getLatestActivePeriod();
+        int archivedCount = salaryService.archiveSalaryRecords(request.getOperatorId(), effectivePeriod);
         return ApiResponse.success(archivedCount);
+    }
+
+    /**
+     * 获取薪酬池概览（总额、已分配、剩余）
+     * ADMIN、LEADER、VICE_LEADER 可查看
+     */
+    @GetMapping("/pool-summary")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'VICE_LEADER')")
+    public ApiResponse<SalaryPoolSummaryDTO> getPoolSummary(
+            @RequestParam(required = false) String period) {
+        String effectivePeriod = period != null ? period : salaryService.getLatestActivePeriod();
+        SalaryPoolSummaryDTO summary = salaryService.getPoolSummary(effectivePeriod);
+        return ApiResponse.success(summary);
     }
 }

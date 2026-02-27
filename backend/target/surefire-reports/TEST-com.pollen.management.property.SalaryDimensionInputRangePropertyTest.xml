@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.262" tests="7" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.06" tests="7" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -10,14 +10,14 @@
     <property name="user.variant" value=""/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
     <property name="user.timezone" value="Asia/Shanghai"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
     <property name="os.name" value="Windows 11"/>
     <property name="java.vm.specification.version" value="17"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CN"/>
     <property name="sun.boot.library.path" value="E:\Work\huanjing\jdk17\bin"/>
-    <property name="sun.java.command" value="C:\Users\30574\AppData\Local\Temp\surefire2169918193270061457\surefirebooter-20260225190432487_3.jar C:\Users\30574\AppData\Local\Temp\surefire2169918193270061457 2026-02-25T19-04-32_258-jvmRun1 surefire-20260225190432487_1tmp surefire_0-20260225190432487_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\30574\AppData\Local\Temp\surefire13782361977656462329\surefirebooter-20260225210024512_3.jar C:\Users\30574\AppData\Local\Temp\surefire13782361977656462329 2026-02-25T21-00-24_274-jvmRun1 surefire-20260225210024512_1tmp surefire_0-20260225210024512_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="test" value="SalaryConfigServiceImplTest,SalaryServiceImplTest,SalaryConfigControllerTest,SalaryControllerTest,SalaryConfigRoundTripPropertyTest,SalaryConfigValidationPropertyTest,SalaryDimensionSummaryPropertyTest,SalaryDimensionInputRangePropertyTest,CheckinTierLookupPropertyTest,PointsToMiniCoinsPropertyTest,SalaryPoolDistributionPropertyTest,SalaryRangeAndTotalInvariantPropertyTest,SalaryReportCompletenessPropertyTest,ArchiveOperationIntegrityPropertyTest,MemberRotationServiceImplTest,RotationThresholdEffectivenessPropertyTest,FormalMemberCountProperties"/>
     <property name="surefire.test.class.path" value="E:\Desktop\Project\huafena\backend\target\test-classes;E:\Desktop\Project\huafena\backend\target\classes;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-web\3.3.6\spring-boot-starter-web-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter\3.3.6\spring-boot-starter-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot\3.3.6\spring-boot-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-autoconfigure\3.3.6\spring-boot-autoconfigure-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-logging\3.3.6\spring-boot-starter-logging-3.3.6.jar;E:\Work\huanjing\Maven\repository\ch\qos\logback\logback-classic\1.5.12\logback-classic-1.5.12.jar;E:\Work\huanjing\Maven\repository\ch\qos\logback\logback-core\1.5.12\logback-core-1.5.12.jar;E:\Work\huanjing\Maven\repository\org\apache\logging\log4j\log4j-to-slf4j\2.23.1\log4j-to-slf4j-2.23.1.jar;E:\Work\huanjing\Maven\repository\org\slf4j\jul-to-slf4j\2.0.16\jul-to-slf4j-2.0.16.jar;E:\Work\huanjing\Maven\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;E:\Work\huanjing\Maven\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-json\3.3.6\spring-boot-starter-json-3.3.6.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.17.3\jackson-datatype-jdk8-2.17.3.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.17.3\jackson-datatype-jsr310-2.17.3.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.17.3\jackson-module-parameter-names-2.17.3.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-tomcat\3.3.6\spring-boot-starter-tomcat-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.33\tomcat-embed-core-10.1.33.jar;E:\Work\huanjing\Maven\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.33\tomcat-embed-websocket-10.1.33.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-web\6.1.15\spring-web-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-beans\6.1.15\spring-beans-6.1.15.jar;E:\Work\huanjing\Maven\repository\io\micrometer\micrometer-observation\1.13.8\micrometer-observation-1.13.8.jar;E:\Work\huanjing\Maven\repository\io\micrometer\micrometer-commons\1.13.8\micrometer-commons-1.13.8.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-webmvc\6.1.15\spring-webmvc-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-context\6.1.15\spring-context-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-expression\6.1.15\spring-expression-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-security\3.3.6\spring-boot-starter-security-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-aop\6.1.15\spring-aop-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\security\spring-security-config\6.3.5\spring-security-config-6.3.5.jar;E:\Work\huanjing\Maven\repository\org\springframework\security\spring-security-web\6.3.5\spring-security-web-6.3.5.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.3.6\spring-boot-starter-data-jpa-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-jdbc\3.3.6\spring-boot-starter-jdbc-3.3.6.jar;E:\Work\huanjing\Maven\repository\com\zaxxer\HikariCP\5.1.0\HikariCP-5.1.0.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-jdbc\6.1.15\spring-jdbc-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\hibernate\orm\hibernate-core\6.5.3.Final\hibernate-core-6.5.3.Final.jar;E:\Work\huanjing\Maven\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;E:\Work\huanjing\Maven\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;E:\Work\huanjing\Maven\repository\org\jboss\logging\jboss-logging\3.5.3.Final\jboss-logging-3.5.3.Final.jar;E:\Work\huanjing\Maven\repository\org\hibernate\common\hibernate-commons-annotations\6.0.6.Final\hibernate-commons-annotations-6.0.6.Final.jar;E:\Work\huanjing\Maven\repository\io\smallrye\jandex\3.1.2\jandex-3.1.2.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\classmate\1.7.0\classmate-1.7.0.jar;E:\Work\huanjing\Maven\repository\net\bytebuddy\byte-buddy\1.14.19\byte-buddy-1.14.19.jar;E:\Work\huanjing\Maven\repository\org\glassfish\jaxb\jaxb-runtime\4.0.5\jaxb-runtime-4.0.5.jar;E:\Work\huanjing\Maven\repository\org\glassfish\jaxb\jaxb-core\4.0.5\jaxb-core-4.0.5.jar;E:\Work\huanjing\Maven\repository\org\glassfish\jaxb\txw2\4.0.5\txw2-4.0.5.jar;E:\Work\huanjing\Maven\repository\com\sun\istack\istack-commons-runtime\4.1.2\istack-commons-runtime-4.1.2.jar;E:\Work\huanjing\Maven\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;E:\Work\huanjing\Maven\repository\org\antlr\antlr4-runtime\4.13.0\antlr4-runtime-4.13.0.jar;E:\Work\huanjing\Maven\repository\org\springframework\data\spring-data-jpa\3.3.6\spring-data-jpa-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\data\spring-data-commons\3.3.6\spring-data-commons-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-orm\6.1.15\spring-orm-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-tx\6.1.15\spring-tx-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\slf4j\slf4j-api\2.0.16\slf4j-api-2.0.16.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-aspects\6.1.15\spring-aspects-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-validation\3.3.6\spring-boot-starter-validation-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.33\tomcat-embed-el-10.1.33.jar;E:\Work\huanjing\Maven\repository\org\hibernate\validator\hibernate-validator\8.0.1.Final\hibernate-validator-8.0.1.Final.jar;E:\Work\huanjing\Maven\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;E:\Work\huanjing\Maven\repository\com\mysql\mysql-connector-j\8.3.0\mysql-connector-j-8.3.0.jar;E:\Work\huanjing\Maven\repository\org\projectlombok\lombok\1.18.36\lombok-1.18.36.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-test\3.3.6\spring-boot-starter-test-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-test\3.3.6\spring-boot-test-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-test-autoconfigure\3.3.6\spring-boot-test-autoconfigure-3.3.6.jar;E:\Work\huanjing\Maven\repository\com\jayway\jsonpath\json-path\2.9.0\json-path-2.9.0.jar;E:\Work\huanjing\Maven\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.2\jakarta.xml.bind-api-4.0.2.jar;E:\Work\huanjing\Maven\repository\jakarta\activation\jakarta.activation-api\2.1.3\jakarta.activation-api-2.1.3.jar;E:\Work\huanjing\Maven\repository\net\minidev\json-smart\2.5.1\json-smart-2.5.1.jar;E:\Work\huanjing\Maven\repository\net\minidev\accessors-smart\2.5.1\accessors-smart-2.5.1.jar;E:\Work\huanjing\Maven\repository\org\ow2\asm\asm\9.6\asm-9.6.jar;E:\Work\huanjing\Maven\repository\org\assertj\assertj-core\3.25.3\assertj-core-3.25.3.jar;E:\Work\huanjing\Maven\repository\org\awaitility\awaitility\4.2.2\awaitility-4.2.2.jar;E:\Work\huanjing\Maven\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;E:\Work\huanjing\Maven\repository\org\junit\jupiter\junit-jupiter\5.10.5\junit-jupiter-5.10.5.jar;E:\Work\huanjing\Maven\repository\org\junit\jupiter\junit-jupiter-api\5.10.5\junit-jupiter-api-5.10.5.jar;E:\Work\huanjing\Maven\repository\org\junit\jupiter\junit-jupiter-params\5.10.5\junit-jupiter-params-5.10.5.jar;E:\Work\huanjing\Maven\repository\org\junit\jupiter\junit-jupiter-engine\5.10.5\junit-jupiter-engine-5.10.5.jar;E:\Work\huanjing\Maven\repository\org\mockito\mockito-core\5.11.0\mockito-core-5.11.0.jar;E:\Work\huanjing\Maven\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar;E:\Work\huanjing\Maven\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;E:\Work\huanjing\Maven\repository\org\mockito\mockito-junit-jupiter\5.11.0\mockito-junit-jupiter-5.11.0.jar;E:\Work\huanjing\Maven\repository\org\skyscreamer\jsonassert\1.5.3\jsonassert-1.5.3.jar;E:\Work\huanjing\Maven\repository\com\vaadin\external\google\android-json\0.0.20131108.vaadin1\android-json-0.0.20131108.vaadin1.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-core\6.1.15\spring-core-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-jcl\6.1.15\spring-jcl-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-test\6.1.15\spring-test-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\xmlunit\xmlunit-core\2.9.1\xmlunit-core-2.9.1.jar;E:\Work\huanjing\Maven\repository\org\springframework\security\spring-security-test\6.3.5\spring-security-test-6.3.5.jar;E:\Work\huanjing\Maven\repository\org\springframework\security\spring-security-core\6.3.5\spring-security-core-6.3.5.jar;E:\Work\huanjing\Maven\repository\org\springframework\security\spring-security-crypto\6.3.5\spring-security-crypto-6.3.5.jar;E:\Work\huanjing\Maven\repository\net\jqwik\jqwik\1.9.1\jqwik-1.9.1.jar;E:\Work\huanjing\Maven\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;E:\Work\huanjing\Maven\repository\net\jqwik\jqwik-api\1.9.1\jqwik-api-1.9.1.jar;E:\Work\huanjing\Maven\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;E:\Work\huanjing\Maven\repository\org\junit\platform\junit-platform-commons\1.10.5\junit-platform-commons-1.10.5.jar;E:\Work\huanjing\Maven\repository\net\jqwik\jqwik-web\1.9.1\jqwik-web-1.9.1.jar;E:\Work\huanjing\Maven\repository\net\jqwik\jqwik-time\1.9.1\jqwik-time-1.9.1.jar;E:\Work\huanjing\Maven\repository\net\jqwik\jqwik-engine\1.9.1\jqwik-engine-1.9.1.jar;E:\Work\huanjing\Maven\repository\org\junit\platform\junit-platform-engine\1.10.5\junit-platform-engine-1.10.5.jar;E:\Work\huanjing\Maven\repository\com\h2database\h2\2.2.224\h2-2.2.224.jar;E:\Work\huanjing\Maven\repository\org\apache\poi\poi-ooxml\5.2.5\poi-ooxml-5.2.5.jar;E:\Work\huanjing\Maven\repository\org\apache\poi\poi\5.2.5\poi-5.2.5.jar;E:\Work\huanjing\Maven\repository\commons-codec\commons-codec\1.16.1\commons-codec-1.16.1.jar;E:\Work\huanjing\Maven\repository\org\apache\commons\commons-math3\3.6.1\commons-math3-3.6.1.jar;E:\Work\huanjing\Maven\repository\com\zaxxer\SparseBitSet\1.3\SparseBitSet-1.3.jar;E:\Work\huanjing\Maven\repository\org\apache\poi\poi-ooxml-lite\5.2.5\poi-ooxml-lite-5.2.5.jar;E:\Work\huanjing\Maven\repository\org\apache\xmlbeans\xmlbeans\5.2.0\xmlbeans-5.2.0.jar;E:\Work\huanjing\Maven\repository\org\apache\commons\commons-compress\1.25.0\commons-compress-1.25.0.jar;E:\Work\huanjing\Maven\repository\commons-io\commons-io\2.15.0\commons-io-2.15.0.jar;E:\Work\huanjing\Maven\repository\com\github\virtuald\curvesapi\1.08\curvesapi-1.08.jar;E:\Work\huanjing\Maven\repository\org\apache\logging\log4j\log4j-api\2.23.1\log4j-api-2.23.1.jar;E:\Work\huanjing\Maven\repository\org\apache\commons\commons-collections4\4.4\commons-collections4-4.4.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-data-redis\3.3.6\spring-boot-starter-data-redis-3.3.6.jar;E:\Work\huanjing\Maven\repository\io\lettuce\lettuce-core\6.3.2.RELEASE\lettuce-core-6.3.2.RELEASE.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-common\4.1.115.Final\netty-common-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-handler\4.1.115.Final\netty-handler-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-resolver\4.1.115.Final\netty-resolver-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-buffer\4.1.115.Final\netty-buffer-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-transport-native-unix-common\4.1.115.Final\netty-transport-native-unix-common-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-codec\4.1.115.Final\netty-codec-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\netty\netty-transport\4.1.115.Final\netty-transport-4.1.115.Final.jar;E:\Work\huanjing\Maven\repository\io\projectreactor\reactor-core\3.6.12\reactor-core-3.6.12.jar;E:\Work\huanjing\Maven\repository\org\reactivestreams\reactive-streams\1.0.4\reactive-streams-1.0.4.jar;E:\Work\huanjing\Maven\repository\org\springframework\data\spring-data-redis\3.3.6\spring-data-redis-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\data\spring-data-keyvalue\3.3.6\spring-data-keyvalue-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-oxm\6.1.15\spring-oxm-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-mail\3.3.6\spring-boot-starter-mail-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\springframework\spring-context-support\6.1.15\spring-context-support-6.1.15.jar;E:\Work\huanjing\Maven\repository\org\eclipse\angus\jakarta.mail\2.0.3\jakarta.mail-2.0.3.jar;E:\Work\huanjing\Maven\repository\org\eclipse\angus\angus-activation\2.0.2\angus-activation-2.0.2.jar;E:\Work\huanjing\Maven\repository\org\springframework\retry\spring-retry\2.0.10\spring-retry-2.0.10.jar;E:\Work\huanjing\Maven\repository\org\springframework\boot\spring-boot-starter-aop\3.3.6\spring-boot-starter-aop-3.3.6.jar;E:\Work\huanjing\Maven\repository\org\aspectj\aspectjweaver\1.9.22.1\aspectjweaver-1.9.22.1.jar;E:\Work\huanjing\Maven\repository\io\jsonwebtoken\jjwt-api\0.12.6\jjwt-api-0.12.6.jar;E:\Work\huanjing\Maven\repository\io\jsonwebtoken\jjwt-impl\0.12.6\jjwt-impl-0.12.6.jar;E:\Work\huanjing\Maven\repository\io\jsonwebtoken\jjwt-jackson\0.12.6\jjwt-jackson-0.12.6.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\jackson\core\jackson-databind\2.17.3\jackson-databind-2.17.3.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.3\jackson-annotations-2.17.3.jar;E:\Work\huanjing\Maven\repository\com\fasterxml\jackson\core\jackson-core\2.17.3\jackson-core-2.17.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\30574"/>
@@ -31,7 +31,9 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\30574\AppData\Local\Temp\surefire2169918193270061457\surefirebooter-20260225190432487_3.jar"/>
+    <property name="FILE_LOG_CHARSET" value="GBK"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="C:\Users\30574\AppData\Local\Temp\surefire13782361977656462329\surefirebooter-20260225210024512_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.12+8-LTS-286"/>
@@ -40,16 +42,18 @@
     <property name="os.version" value="10.0"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="file.encoding" value="GBK"/>
-    <property name="surefire.failIfNoSpecifiedTests" value="false"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="localRepository" value="E:\Work\huanjing\Maven\repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="C:\Users\30574\AppData\Local\Temp\"/>
+    <property name="com.zaxxer.hikari.pool_number" value="1"/>
     <property name="java.version" value="17.0.12"/>
     <property name="user.dir" value="E:\Desktop\Project\huafena\backend"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="129080"/>
     <property name="sun.os.patch.level" value=""/>
+    <property name="CONSOLE_LOG_CHARSET" value="GBK"/>
     <property name="native.encoding" value="GBK"/>
     <property name="java.library.path" value="E:\Work\huanjing\jdk17\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;E:\Work\App\VMware Workstation Pro\bin\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;E:\Work\huanjing\jdk17\bin;E:\Work\huanjing\jdk17\jre\bin;E:\Work\huanjing\nodejs\;C:\Program Files\dotnet\;E:\Work\huanjing\Maven\apache-maven-3.6.3\bin;E:\Work\App\Git\cmd;E:\Work\App\Git\bin;E:\Work\huanjing\Redis-8.6.0-Windows-x64-cygwin-with-Service\Redis-8.6.0-Windows-x64-cygwin-with-Service;E:\Work\huanjing\python\Scripts\;E:\Work\huanjing\python\;C:\Users\30574\AppData\Local\Programs\Python\Launcher\;e:\Work\AIGC\Trae\bin;C:\Users\30574\AppData\Local\Microsoft\WindowsApps;C:\Users\30574\AppData\Roaming\npm;E:\Work\App\IntelliJ IDEA 2025.3.1.1\bin;E:\Work\App\Microsoft VS Code\bin;E:\Work\AIGC\Kiro\bin;E:\Work\App\PyCharm 2025.3.2\bin;."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
@@ -58,8 +62,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="property4 communityActivityOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.043">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:38.890866300, SalaryDimensionInputRangePropertyTest:property4 communityActivityOutOfRange rejected = 
+  <testcase name="property4 communityActivityOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.01">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.816465200, SalaryDimensionInputRangePropertyTest:property4 communityActivityOutOfRange rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -68,14 +72,14 @@ after-failure = SAMPLE_FIRST  | try previously failed sample, then previous seed
 when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 8          | # of all combined edge cases
-edge-cases#tried = 8          | # of edge cases tried in current run
-seed = 5178774213738713057    | random seed to reproduce generated values
+edge-cases#tried = 6          | # of edge cases tried in current run
+seed = 6673659791502109871    | random seed to reproduce generated values
 
 
 ]]></system-out>
   </testcase>
-  <testcase name="property4 taskCompletionOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.035">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:38.927349100, SalaryDimensionInputRangePropertyTest:property4 taskCompletionOutOfRange rejected = 
+  <testcase name="property4 taskCompletionOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.008">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.824116800, SalaryDimensionInputRangePropertyTest:property4 taskCompletionOutOfRange rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -84,14 +88,14 @@ after-failure = SAMPLE_FIRST  | try previously failed sample, then previous seed
 when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 8          | # of all combined edge cases
-edge-cases#tried = 8          | # of edge cases tried in current run
-seed = -3939473603397072639   | random seed to reproduce generated values
+edge-cases#tried = 4          | # of edge cases tried in current run
+seed = -7436602352655641618   | random seed to reproduce generated values
 
 
 ]]></system-out>
   </testcase>
-  <testcase name="property4 announcementCountNegative rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.04">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:38.968022200, SalaryDimensionInputRangePropertyTest:property4 announcementCountNegative rejected = 
+  <testcase name="property4 announcementCountNegative rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.007">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.831807500, SalaryDimensionInputRangePropertyTest:property4 announcementCountNegative rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -101,13 +105,13 @@ when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 4          | # of all combined edge cases
 edge-cases#tried = 4          | # of edge cases tried in current run
-seed = 7407515673233987617    | random seed to reproduce generated values
+seed = -3193919689865141508   | random seed to reproduce generated values
 
 
 ]]></system-out>
   </testcase>
-  <testcase name="property4 monthlyExcellentOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.04">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:39.008621400, SalaryDimensionInputRangePropertyTest:property4 monthlyExcellentOutOfRange rejected = 
+  <testcase name="property4 monthlyExcellentOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.009">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.840362500, SalaryDimensionInputRangePropertyTest:property4 monthlyExcellentOutOfRange rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -117,13 +121,13 @@ when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 8          | # of all combined edge cases
 edge-cases#tried = 8          | # of edge cases tried in current run
-seed = -4791709883931435535   | random seed to reproduce generated values
+seed = 4352868277104197513    | random seed to reproduce generated values
 
 
 ]]></system-out>
   </testcase>
-  <testcase name="property4 eventHostingOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.037">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:39.046409700, SalaryDimensionInputRangePropertyTest:property4 eventHostingOutOfRange rejected = 
+  <testcase name="property4 eventHostingOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.008">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.848914800, SalaryDimensionInputRangePropertyTest:property4 eventHostingOutOfRange rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -132,14 +136,14 @@ after-failure = SAMPLE_FIRST  | try previously failed sample, then previous seed
 when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 8          | # of all combined edge cases
-edge-cases#tried = 8          | # of edge cases tried in current run
-seed = -7030856559422615945   | random seed to reproduce generated values
+edge-cases#tried = 6          | # of edge cases tried in current run
+seed = 2651607587176261387    | random seed to reproduce generated values
 
 
 ]]></system-out>
   </testcase>
-  <testcase name="property4 violationHandlingCountNegative rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.029">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:39.074954, SalaryDimensionInputRangePropertyTest:property4 violationHandlingCountNegative rejected = 
+  <testcase name="property4 violationHandlingCountNegative rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.008">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.856585400, SalaryDimensionInputRangePropertyTest:property4 violationHandlingCountNegative rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -148,14 +152,14 @@ after-failure = SAMPLE_FIRST  | try previously failed sample, then previous seed
 when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 4          | # of all combined edge cases
-edge-cases#tried = 4          | # of edge cases tried in current run
-seed = 4510637786826006885    | random seed to reproduce generated values
+edge-cases#tried = 2          | # of edge cases tried in current run
+seed = 6908340972591155978    | random seed to reproduce generated values
 
 
 ]]></system-out>
   </testcase>
-  <testcase name="property4 birthdayBonusOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.03">
-    <system-out><![CDATA[timestamp = 2026-02-25T19:04:39.107325900, SalaryDimensionInputRangePropertyTest:property4 birthdayBonusOutOfRange rejected = 
+  <testcase name="property4 birthdayBonusOutOfRange rejected" classname="com.pollen.management.property.SalaryDimensionInputRangePropertyTest" time="0.009">
+    <system-out><![CDATA[timestamp = 2026-02-25T21:01:03.865021300, SalaryDimensionInputRangePropertyTest:property4 birthdayBonusOutOfRange rejected = 
                               |-----------------------jqwik-----------------------
 tries = 100                   | # of calls to property
 checks = 100                  | # of not rejected calls
@@ -165,7 +169,7 @@ when-fixed-seed = ALLOW       | fixing the random seed is allowed
 edge-cases#mode = MIXIN       | edge cases are mixed in
 edge-cases#total = 8          | # of all combined edge cases
 edge-cases#tried = 7          | # of edge cases tried in current run
-seed = -785114037477467938    | random seed to reproduce generated values
+seed = 6315874716343297778    | random seed to reproduce generated values
 
 
 ]]></system-out>
